@@ -242,9 +242,9 @@ function checkPasswordStrength(val) {
    ========================================================================== */
 
 // 1. LOGIN HANDLER
-function handleLoginSubmit(e) {
+async function handleLoginSubmit(e) {
     e.preventDefault();
-    const email = document.getElementById('login-email').value.trim();
+    const username = document.getElementById('login-username').value.trim();
     const password = document.getElementById('login-password').value;
 
     if (!validateCaptcha('login')) {
@@ -256,42 +256,41 @@ function handleLoginSubmit(e) {
     const btn = document.getElementById('btn-login');
     setButtonLoading(btn, true);
 
-    setTimeout(() => {
+    try {
+        const response = await fetch('http://localhost:5000/api/login', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ username, password })
+        });
+        const data = await response.json();
+        
         setButtonLoading(btn, false);
-        const users = getUsersFromStorage();
-        const user = users.find(u => u.email.toLowerCase() === email.toLowerCase());
 
-        if (!user || user.password !== password) {
-            showToast('Invalid email address or password', 'error');
+        if (!data.success) {
+            showToast(data.message || 'Invalid username or password', 'error');
             generateCaptcha('login');
             return;
         }
 
-        triggerOtpFlow('LOGIN', email, { user });
-    }, 500);
+        // Pass email to triggerOtpFlow so the user gets the OTP
+        triggerOtpFlow('LOGIN', data.email, { user: data.user });
+    } catch (err) {
+        setButtonLoading(btn, false);
+        showToast('Cannot connect to server', 'error');
+    }
 }
 
 // 2. REGISTER HANDLER
-function handleRegisterSubmit(e) {
+async function handleRegisterSubmit(e) {
     e.preventDefault();
     const firstName = document.getElementById('reg-firstname').value.trim();
     const lastName = document.getElementById('reg-lastname').value.trim();
-    const name = `${firstName} ${lastName}`.trim();
+    const username = document.getElementById('reg-username').value.trim();
     const email = document.getElementById('reg-email').value.trim();
-    const phone = document.getElementById('reg-phone').value.trim();
     const password = document.getElementById('reg-password').value;
 
     if (!validateCaptcha('reg')) {
         showToast('Invalid Security CAPTCHA code. Please re-enter.', 'error');
-        generateCaptcha('reg');
-        return;
-    }
-
-    const users = getUsersFromStorage();
-    const existing = users.find(u => u.email.toLowerCase() === email.toLowerCase());
-
-    if (existing) {
-        showToast('An account with this email address already exists', 'error');
         generateCaptcha('reg');
         return;
     }
@@ -301,29 +300,30 @@ function handleRegisterSubmit(e) {
         return;
     }
 
-    if (phone.length !== 10 || !/^\d+$/.test(phone)) {
-        showToast('Mobile number must be exactly 10 digits', 'error');
-        return;
-    }
-
     const btn = document.getElementById('btn-register');
     setButtonLoading(btn, true);
 
-    setTimeout(() => {
+    try {
+        const response = await fetch('http://localhost:5000/api/register', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ username, email, password, firstName, lastName })
+        });
+        const data = await response.json();
+        
         setButtonLoading(btn, false);
-        const accountNumber = `#8849-${Math.floor(1000 + Math.random() * 9000)}-${Math.floor(1000 + Math.random() * 9000)}`;
-        const newUserObj = {
-            name,
-            email,
-            phone,
-            password,
-            accountType: 'Savings Account',
-            accountNumber,
-            balance: '25,000.00'
-        };
 
-        triggerOtpFlow('REGISTER', email, { newUserObj });
-    }, 500);
+        if (!data.success) {
+            showToast(data.message || 'Registration failed', 'error');
+            generateCaptcha('reg');
+            return;
+        }
+
+        triggerOtpFlow('REGISTER', email, { newUserObj: data.user });
+    } catch (err) {
+        setButtonLoading(btn, false);
+        showToast('Cannot connect to server', 'error');
+    }
 }
 
 // 3. FORGOT PASSWORD STEP 1 HANDLER
@@ -522,7 +522,7 @@ function setupOtpBoxNavigation() {
     });
 }
 
-function submitOtpVerification() {
+async function submitOtpVerification() {
     const boxes = document.querySelectorAll('.otp-box');
     let enteredCode = '';
     boxes.forEach(b => enteredCode += b.value);
@@ -532,31 +532,42 @@ function submitOtpVerification() {
         return;
     }
 
-    if (enteredCode !== currentOtpCode) {
-        showToast('Invalid OTP Code. Please check your Gmail inbox.', 'error');
-        return;
-    }
-
     const btn = document.getElementById('btn-verify-otp');
     setButtonLoading(btn, true);
+    
+    const targetEmail = document.getElementById('otp-target-display').textContent;
 
-    setTimeout(() => {
+    try {
+        const response = await fetch('http://localhost:5000/api/verify-otp', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email: targetEmail, otp: enteredCode })
+        });
+        const data = await response.json();
+        
         setButtonLoading(btn, false);
+
+        if (!data.success) {
+            showToast('Invalid OTP Code. Please check your Gmail inbox.', 'error');
+            return;
+        }
+
         closeOtpModal();
 
         if (pendingOtpAction === 'LOGIN') {
             completeLogin(pendingPayload.user);
         } else if (pendingOtpAction === 'REGISTER') {
-            const users = getUsersFromStorage();
-            users.push(pendingPayload.newUserObj);
-            localStorage.setItem('bank_users', JSON.stringify(users));
             completeLogin(pendingPayload.newUserObj);
         } else if (pendingOtpAction === 'RESET_PASSWORD') {
             document.getElementById('reset-verified-email').textContent = pendingPayload.userEmail;
             document.getElementById('forgot-password-form-1').classList.add('hidden');
             document.getElementById('forgot-password-form-2').classList.remove('hidden');
         }
-    }, 500);
+
+    } catch (err) {
+        setButtonLoading(btn, false);
+        showToast('Cannot connect to server', 'error');
+    }
 }
 
 /* ==========================================================================
