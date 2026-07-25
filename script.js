@@ -254,6 +254,12 @@ async function handleLoginSubmit(e) {
     }
 
     const btn = document.getElementById('btn-login');
+    const errorMsgDiv = document.getElementById('login-error-msg');
+    
+    // Clear previous errors
+    errorMsgDiv.style.display = 'none';
+    errorMsgDiv.textContent = '';
+    
     setButtonLoading(btn, true);
 
     try {
@@ -267,8 +273,19 @@ async function handleLoginSubmit(e) {
         setButtonLoading(btn, false);
 
         if (!data.success) {
-            showToast(data.message || 'Invalid username or password', 'error');
-            generateCaptcha('login');
+            if (data.attempts_remaining !== undefined || data.lockout) {
+                // Show inline error for passwords/lockouts
+                errorMsgDiv.textContent = data.message;
+                errorMsgDiv.style.display = 'block';
+            } else {
+                // Fallback to toast for generic errors
+                showToast(data.message || 'Invalid username or password', 'error');
+            }
+            
+            // Only generate new captcha if it's not a lockout
+            if (!data.lockout) {
+                generateCaptcha('login');
+            }
             return;
         }
 
@@ -557,7 +574,8 @@ async function submitOtpVerification() {
         if (pendingOtpAction === 'LOGIN') {
             completeLogin(pendingPayload.user);
         } else if (pendingOtpAction === 'REGISTER') {
-            completeLogin(pendingPayload.newUserObj);
+            showToast('Registration successful! Please log in.', 'success');
+            switchView('login');
         } else if (pendingOtpAction === 'RESET_PASSWORD') {
             document.getElementById('reset-verified-email').textContent = pendingPayload.userEmail;
             document.getElementById('forgot-password-form-1').classList.add('hidden');
