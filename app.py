@@ -256,6 +256,9 @@ def send_otp():
         cursor.execute("SELECT first_name, username FROM users WHERE email=%s", (email,))
         user_record = cursor.fetchone()
         
+        if action == 'RESET_PASSWORD' and not user_record:
+            return jsonify({'success': False, 'message': 'No account found with this email address'}), 404
+
         if user_record:
             if user_record.get('first_name'):
                 first_name = user_record['first_name']
@@ -307,6 +310,53 @@ def verify_otp():
     finally:
         if 'cursor' in locals(): cursor.close()
         if 'conn' in locals(): conn.close()
+
+@app.route('/api/reset-password', methods=['POST'])
+def reset_password():
+    data = request.json
+    email = data.get('email')
+    new_password = data.get('password')
+
+    if not email or not new_password:
+        return jsonify({'success': False, 'message': 'Missing data'}), 400
+
+    hashed_pw = bcrypt.hashpw(new_password.encode('utf-8'), bcrypt.gensalt())
+
+    try:
+        conn = get_db_connection()
+
+        # Use a buffered cursor (or close after fetch) to avoid "Unread result found"
+        cursor = conn.cursor(dictionary=True, buffered=True)
+        cursor.execute(
+            "SELECT id FROM otps WHERE email=%s AND used=TRUE AND created_at >= NOW() - INTERVAL 15 MINUTE",
+            (email,)
+        )
+        otp_row = cursor.fetchone()
+        cursor.close()
+
+        if not otp_row:
+            return jsonify({'success': False, 'message': 'No verified OTP found for this email. Please request a new OTP.'}), 403
+
+        # Use a fresh cursor for the UPDATE 
+        cursor = conn.cursor()
+        cursor.execute("UPDATE users SET password_hash=%s WHERE email=%s", (hashed_pw, email))
+        conn.commit()
+
+        affected = cursor.rowcount
+        print(f"Reset password request for {email}, affected rows: {affected}")
+
+        cursor.close()
+
+        if affected == 0:
+            return jsonify({'success': False, 'message': 'No account found with this email address or update failed'}), 404
+
+        return jsonify({'success': True, 'message': 'Password reset successful'})
+    except Exception as e:
+        print(f"DB Error: {e}")
+        return jsonify({'success': False, 'message': 'Server error'}), 500
+    finally:
+        if 'conn' in locals() and conn:
+            conn.close()
 
 if __name__ == '__main__':
     app.run(port=5000, debug=True)

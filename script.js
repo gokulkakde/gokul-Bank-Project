@@ -2,23 +2,7 @@
    OFFICIAL ENTERPRISE BANK MANAGEMENT SYSTEM - PORTAL CORE LOGIC
    ========================================================================== */
 
-// Initial Seed Database in LocalStorage if empty
-(function initDatabase() {
-    if (!localStorage.getItem('bank_users')) {
-        const initialUsers = [
-            {
-                name: 'John Doe',
-                email: 'demo@gmail.com',
-                phone: '+1 (555) 019-2834',
-                password: 'Password123!',
-                accountType: 'Premier Checking Account',
-                accountNumber: '#8849-2049-1102',
-                balance: '148,920.50'
-            }
-        ];
-        localStorage.setItem('bank_users', JSON.stringify(initialUsers));
-    }
-})();
+// Removed initDatabase
 
 // Application & Navigation State
 let currentUser = null;
@@ -318,6 +302,14 @@ async function handleRegisterSubmit(e) {
     }
 
     const btn = document.getElementById('btn-register');
+    const errorMsgDiv = document.getElementById('reg-error-msg');
+    
+    // Clear previous errors
+    if (errorMsgDiv) {
+        errorMsgDiv.style.display = 'none';
+        errorMsgDiv.textContent = '';
+    }
+
     setButtonLoading(btn, true);
 
     try {
@@ -331,7 +323,12 @@ async function handleRegisterSubmit(e) {
         setButtonLoading(btn, false);
 
         if (!data.success) {
-            showToast(data.message || 'Registration failed', 'error');
+            if (errorMsgDiv) {
+                errorMsgDiv.textContent = data.message || 'Registration failed';
+                errorMsgDiv.style.display = 'block';
+            } else {
+                showToast(data.message || 'Registration failed', 'error');
+            }
             generateCaptcha('reg');
             return;
         }
@@ -354,15 +351,6 @@ function handleForgotPasswordRequest(e) {
         return;
     }
 
-    const users = getUsersFromStorage();
-    const user = users.find(u => u.email.toLowerCase() === email.toLowerCase());
-
-    if (!user) {
-        showToast('No account found with this email address', 'error');
-        generateCaptcha('reset');
-        return;
-    }
-
     const btn = document.getElementById('btn-forgot-1');
     setButtonLoading(btn, true);
 
@@ -373,7 +361,7 @@ function handleForgotPasswordRequest(e) {
 }
 
 // 4. FORGOT PASSWORD STEP 2 HANDLER
-function handleNewPasswordSubmit(e) {
+async function handleNewPasswordSubmit(e) {
     e.preventDefault();
     const email = document.getElementById('reset-verified-email').textContent;
     const newPassword = document.getElementById('new-password').value;
@@ -392,19 +380,36 @@ function handleNewPasswordSubmit(e) {
     const btn = document.getElementById('btn-forgot-2');
     setButtonLoading(btn, true);
 
-    setTimeout(() => {
+    try {
+        const response = await fetch('http://localhost:5000/api/reset-password', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email: email, password: newPassword })
+        });
+        
+        const data = await response.json();
         setButtonLoading(btn, false);
-        const users = getUsersFromStorage();
-        const userIndex = users.findIndex(u => u.email.toLowerCase() === email.toLowerCase());
-        if (userIndex !== -1) {
-            users[userIndex].password = newPassword;
-            localStorage.setItem('bank_users', JSON.stringify(users));
-            showToast('Credentials updated successfully! Please sign in.', 'success');
-            switchView('login');
-            document.getElementById('login-email').value = email;
-            document.getElementById('login-password').value = newPassword;
+
+        if (!response.ok || !data.success) {
+            showToast(data.message || 'Password reset failed', 'error');
+            return;
         }
-    }, 600);
+
+        // Only after backend confirms success, clear fields and navigate
+        document.getElementById('new-password').value = '';
+        document.getElementById('confirm-new-password').value = '';
+        document.getElementById('reset-email').value = '';
+        
+        showToast('Credentials updated successfully! Please sign in.', 'success');
+        switchView('login');
+        document.getElementById('login-username').value = email;
+        document.getElementById('login-password').value = newPassword;
+        
+    } catch (err) {
+        console.error('Password reset error:', err);
+        setButtonLoading(btn, false);
+        showToast('Cannot connect to server. Please try again later.', 'error');
+    }
 }
 
 /* ==========================================================================
@@ -415,8 +420,6 @@ async function triggerOtpFlow(action, email, payload) {
     pendingOtpAction = action;
     pendingPayload = payload;
     
-    currentOtpCode = Math.floor(100000 + Math.random() * 900000).toString();
-
     document.getElementById('otp-target-display').textContent = email;
 
     const boxes = document.querySelectorAll('.otp-box');
@@ -427,42 +430,26 @@ async function triggerOtpFlow(action, email, payload) {
 
     startOtpTimer();
 
-    await sendRealOtpEmail(email, currentOtpCode, action);
+    await sendRealOtpEmail(email, action);
 }
 
-async function sendRealOtpEmail(targetEmail, otpCode, action) {
+async function sendRealOtpEmail(targetEmail, action) {
     try {
         const response = await fetch('http://localhost:5000/api/send-otp', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ email: targetEmail, otp: otpCode, action: action })
+            body: JSON.stringify({ email: targetEmail, action: action })
         });
+        const data = await response.json();
 
-        if (response.ok) {
-            const data = await response.json();
-            if (data.success && !data.requiresFrontendApiFallback) {
-                return;
-            }
+        if (!response.ok || !data.success) {
+            closeOtpModal();
+            showToast(data.message || 'Failed to send OTP', 'error');
         }
     } catch (e) {
-        console.log('Backend server unreachable, using web API dispatch...');
-    }
-
-    try {
-        const formData = new FormData();
-        formData.append('email', targetEmail);
-        formData.append('_subject', `Bank Portal OTP Verification Code: ${otpCode}`);
-        formData.append('Security OTP Code', otpCode);
-        formData.append('Action', action);
-        formData.append('Expiration', '2 Minutes');
-
-        await fetch(`https://formsubmit.co/ajax/${encodeURIComponent(targetEmail)}`, {
-            method: 'POST',
-            body: formData,
-            headers: { 'Accept': 'application/json' }
-        });
-    } catch (err) {
-        console.error('Web Email dispatch error:', err);
+        closeOtpModal();
+        showToast('Backend server unreachable. Cannot send OTP.', 'error');
+        console.error('OTP Send error:', e);
     }
 }
 
@@ -473,7 +460,7 @@ function closeOtpModal() {
 
 function startOtpTimer() {
     if (otpTimerInterval) clearInterval(otpTimerInterval);
-    otpTimeLeft = 120;
+    otpTimeLeft = 300;
     const timerDisplay = document.getElementById('otp-countdown');
     const resendBtn = document.getElementById('resend-otp-btn');
     resendBtn.disabled = true;
@@ -495,13 +482,12 @@ function startOtpTimer() {
 
 async function resendOtpCode() {
     const targetEmail = document.getElementById('otp-target-display').textContent;
-    currentOtpCode = Math.floor(100000 + Math.random() * 900000).toString();
     startOtpTimer();
     const boxes = document.querySelectorAll('.otp-box');
     boxes.forEach(box => box.value = '');
     boxes[0].focus();
 
-    await sendRealOtpEmail(targetEmail, currentOtpCode, pendingOtpAction);
+    await sendRealOtpEmail(targetEmail, pendingOtpAction);
 }
 
 function setupOtpBoxNavigation() {
@@ -698,7 +684,7 @@ function closeTimeoutModal() {
    ========================================================================== */
 
 function getUsersFromStorage() {
-    return JSON.parse(localStorage.getItem('bank_users')) || [];
+    return [];
 }
 
 function setButtonLoading(button, isLoading) {

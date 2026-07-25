@@ -275,6 +275,7 @@
                                             </div>
                                         </div>
                                     </div>
+                                    <div id="reg-error-msg" style="color: #ff4d4d; font-size: 0.85rem; margin-bottom: 1rem; display: none;"></div>
 
                                     <div class="sbi-submit-container">
                                         <button type="submit" class="sbi-btn-login" id="btn-register">
@@ -298,7 +299,7 @@
                                 <!-- STEP 1 -->
                                 <form id="forgot-password-form-1" onsubmit="handleForgotPasswordRequest(event)" class="sbi-form">
                                     <div class="sbi-form-group">
-                                        <label for="reset-email" class="sbi-form-label">Gmail Address</label>
+                                        <label for="reset-email" class="sbi-form-label">Email Address</label>
                                         <input type="email" id="reset-email" class="sbi-form-input" placeholder="" required>
                                     </div>
 
@@ -335,12 +336,12 @@
 
                                     <div class="sbi-form-group">
                                         <label for="new-password" class="sbi-form-label">Create New Password</label>
-                                        <input type="password" id="new-password" class="sbi-form-input" placeholder="Enter new password" required>
+                                        <input type="password" id="new-password" class="sbi-form-input" placeholder="Enter new password" required autocomplete="off">
                                     </div>
 
                                     <div class="sbi-form-group">
                                         <label for="confirm-new-password" class="sbi-form-label">Confirm New Password</label>
-                                        <input type="password" id="confirm-new-password" class="sbi-form-input" placeholder="Confirm new password" required>
+                                        <input type="password" id="confirm-new-password" class="sbi-form-input" placeholder="Confirm new password" required autocomplete="off">
                                     </div>
 
                                     <div class="sbi-submit-container">
