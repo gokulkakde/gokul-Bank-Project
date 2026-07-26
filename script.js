@@ -395,15 +395,21 @@ async function handleNewPasswordSubmit(e) {
             return;
         }
 
-        // Only after backend confirms success, clear fields and navigate
         document.getElementById('new-password').value = '';
         document.getElementById('confirm-new-password').value = '';
         document.getElementById('reset-email').value = '';
+        document.getElementById('reset-verified-email').textContent = '';
+        
+        const resetForm2 = document.getElementById('forgot-password-form-2');
+        if (resetForm2) resetForm2.reset();
         
         showToast('Credentials updated successfully! Please sign in.', 'success');
         switchView('login');
-        document.getElementById('login-username').value = email;
-        document.getElementById('login-password').value = newPassword;
+        
+        document.getElementById('login-username').value = '';
+        document.getElementById('login-password').value = '';
+        const loginForm = document.getElementById('login-form');
+        if (loginForm) loginForm.reset();
         
     } catch (err) {
         console.error('Password reset error:', err);
@@ -610,6 +616,17 @@ function checkExistingSession() {
 function handleLogout() {
     sessionStorage.removeItem('bank_active_session');
     currentUser = null;
+    
+    document.getElementById('login-username').value = '';
+    document.getElementById('login-password').value = '';
+    const loginError = document.getElementById('login-error-msg');
+    if (loginError) {
+        loginError.style.display = 'none';
+        loginError.textContent = '';
+    }
+    const loginForm = document.getElementById('login-form');
+    if (loginForm) loginForm.reset();
+    
     switchView('login');
 }
 

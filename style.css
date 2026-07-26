@@ -683,10 +683,11 @@ body:has(#register-view:not(.hidden)) .sbi-register-benefits-section {
 .sbi-captcha-actions {
     display: flex;
     flex-direction: column;
-    justify-content: space-around;
+    justify-content: center;
+    align-items: center;
     height: 100%;
     border-left: 1px solid #ccc;
-    padding: 0 4px;
+    padding: 0 8px;
 }
 
 .sbi-captcha-action-btn {
@@ -697,7 +698,12 @@ body:has(#register-view:not(.hidden)) .sbi-register-benefits-section {
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 2px;
+    padding: 4px;
+}
+
+.sbi-captcha-action-btn svg {
+    width: 18px;
+    height: 18px;
 }
 
 .sbi-captcha-action-btn:hover {
