@@ -33,13 +33,13 @@ def get_email_template(action, first_name, otp):
     footer_text = "If you didn't request this code, you can safely ignore this email."
 
     if action == 'REGISTER':
-        subject = "Verify your email to complete SPX Bank registration"
+        subject = "Registration Verification OTP"
         heading = "Verify your email address"
         body_desc = "Use the OTP below to verify your email and complete your SPX Bank account registration. This code is valid for 5 minutes."
         security_note = "🔒 Never share this OTP with anyone, including SPX Bank staff."
         footer_text = "If you didn't attempt to create an account with SPX Bank, please ignore this email."
     elif action == 'RESET_PASSWORD':
-        subject = "Reset your SPX Bank account password"
+        subject = "Password Reset OTP"
         heading = "Reset your SPX Bank password"
         body_desc = "We received a request to reset your netbanking password. Use the code below to proceed. Valid for 5 minutes."
         security_note = "🔒 SPX Bank will never ask for this code. Do not share it with anyone."
