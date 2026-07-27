@@ -125,6 +125,33 @@ function switchView(viewName) {
     if (viewHistory[viewHistory.length - 1] !== viewName) {
         viewHistory.push(viewName);
     }
+    
+    // Purge Registration State on View Switching
+    if (viewName === 'login' || viewName === 'register') {
+        const loginForm = document.getElementById('login-form');
+        if (loginForm) loginForm.reset();
+        
+        const registerForm = document.getElementById('register-form');
+        if (registerForm) registerForm.reset();
+        
+        const regError = document.getElementById('reg-error-msg');
+        if (regError) {
+            regError.style.display = 'none';
+            regError.textContent = '';
+        }
+        
+        const loginError = document.getElementById('login-error-msg');
+        if (loginError) {
+            loginError.style.display = 'none';
+            loginError.textContent = '';
+        }
+        
+        // Clear password strength indicator
+        if (typeof checkPasswordStrength === 'function') {
+            checkPasswordStrength('');
+        }
+    }
+
     renderView(viewName);
 }
 
@@ -192,6 +219,7 @@ function checkPasswordStrength(val) {
         bar.style.width = '0%';
         bar.style.backgroundColor = 'transparent';
         text.textContent = 'Password Rating';
+        text.style.color = ''; // Reset the color back to CSS default
         return;
     }
 
@@ -334,6 +362,19 @@ async function handleRegisterSubmit(e) {
         }
 
         triggerOtpFlow('REGISTER', email, { newUserObj: data.user });
+        
+        // Clear Registration Form Post-Success
+        const regForm = document.getElementById('register-form');
+        if (regForm) regForm.reset();
+        ['reg-firstname', 'reg-lastname', 'reg-email', 'reg-username', 'reg-password', 'reg-captcha-input'].forEach(id => {
+            const el = document.getElementById(id);
+            if (el) el.value = '';
+        });
+        
+        // Clear password strength indicator
+        if (typeof checkPasswordStrength === 'function') {
+            checkPasswordStrength('');
+        }
     } catch (err) {
         setButtonLoading(btn, false);
         showToast('Cannot connect to server', 'error');
