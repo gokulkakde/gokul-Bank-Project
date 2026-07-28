@@ -2,23 +2,7 @@
    OFFICIAL ENTERPRISE BANK MANAGEMENT SYSTEM - PORTAL CORE LOGIC
    ========================================================================== */
 
-// Initial Seed Database in LocalStorage if empty
-(function initDatabase() {
-    if (!localStorage.getItem('bank_users')) {
-        const initialUsers = [
-            {
-                name: 'John Doe',
-                email: 'demo@gmail.com',
-                phone: '+1 (555) 019-2834',
-                password: 'Password123!',
-                accountType: 'Premier Checking Account',
-                accountNumber: '#8849-2049-1102',
-                balance: '148,920.50'
-            }
-        ];
-        localStorage.setItem('bank_users', JSON.stringify(initialUsers));
-    }
-})();
+// Removed initDatabase
 
 // Application & Navigation State
 let currentUser = null;
@@ -46,9 +30,6 @@ document.addEventListener('DOMContentLoaded', () => {
     generateCaptcha('reg');
     generateCaptcha('reset');
 
-    // Default sample email for demo convenience
-    document.getElementById('login-email').value = 'demo@gmail.com';
-    document.getElementById('login-password').value = 'Password123!';
 });
 
 /* ==========================================================================
@@ -144,6 +125,33 @@ function switchView(viewName) {
     if (viewHistory[viewHistory.length - 1] !== viewName) {
         viewHistory.push(viewName);
     }
+    
+    // Purge Registration State on View Switching
+    if (viewName === 'login' || viewName === 'register') {
+        const loginForm = document.getElementById('login-form');
+        if (loginForm) loginForm.reset();
+        
+        const registerForm = document.getElementById('register-form');
+        if (registerForm) registerForm.reset();
+        
+        const regError = document.getElementById('reg-error-msg');
+        if (regError) {
+            regError.style.display = 'none';
+            regError.textContent = '';
+        }
+        
+        const loginError = document.getElementById('login-error-msg');
+        if (loginError) {
+            loginError.style.display = 'none';
+            loginError.textContent = '';
+        }
+        
+        // Clear password strength indicator
+        if (typeof checkPasswordStrength === 'function') {
+            checkPasswordStrength('');
+        }
+    }
+
     renderView(viewName);
 }
 
@@ -211,6 +219,7 @@ function checkPasswordStrength(val) {
         bar.style.width = '0%';
         bar.style.backgroundColor = 'transparent';
         text.textContent = 'Password Rating';
+        text.style.color = ''; // Reset the color back to CSS default
         return;
     }
 
@@ -245,9 +254,9 @@ function checkPasswordStrength(val) {
    ========================================================================== */
 
 // 1. LOGIN HANDLER
-function handleLoginSubmit(e) {
+async function handleLoginSubmit(e) {
     e.preventDefault();
-    const email = document.getElementById('login-email').value.trim();
+    const username = document.getElementById('login-username').value.trim();
     const password = document.getElementById('login-password').value;
 
     if (!validateCaptcha('login')) {
@@ -257,44 +266,60 @@ function handleLoginSubmit(e) {
     }
 
     const btn = document.getElementById('btn-login');
+    const errorMsgDiv = document.getElementById('login-error-msg');
+    
+    // Clear previous errors
+    errorMsgDiv.style.display = 'none';
+    errorMsgDiv.textContent = '';
+    
     setButtonLoading(btn, true);
 
-    setTimeout(() => {
+    try {
+        const response = await fetch('http://localhost:5000/api/login', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ username, password })
+        });
+        const data = await response.json();
+        
         setButtonLoading(btn, false);
-        const users = getUsersFromStorage();
-        const user = users.find(u => u.email.toLowerCase() === email.toLowerCase());
 
-        if (!user || user.password !== password) {
-            showToast('Invalid email address or password', 'error');
-            generateCaptcha('login');
+        if (!data.success) {
+            if (data.attempts_remaining !== undefined || data.lockout) {
+                // Show inline error for passwords/lockouts
+                errorMsgDiv.textContent = data.message;
+                errorMsgDiv.style.display = 'block';
+            } else {
+                // Fallback to toast for generic errors
+                showToast(data.message || 'Invalid username or password', 'error');
+            }
+            
+            // Only generate new captcha if it's not a lockout
+            if (!data.lockout) {
+                generateCaptcha('login');
+            }
             return;
         }
 
-        triggerOtpFlow('LOGIN', email, { user });
-    }, 500);
+        // Pass email to triggerOtpFlow so the user gets the OTP
+        triggerOtpFlow('LOGIN', data.email, { user: data.user });
+    } catch (err) {
+        setButtonLoading(btn, false);
+        showToast('Cannot connect to server', 'error');
+    }
 }
 
 // 2. REGISTER HANDLER
-function handleRegisterSubmit(e) {
+async function handleRegisterSubmit(e) {
     e.preventDefault();
     const firstName = document.getElementById('reg-firstname').value.trim();
     const lastName = document.getElementById('reg-lastname').value.trim();
-    const name = `${firstName} ${lastName}`.trim();
+    const username = document.getElementById('reg-username').value.trim();
     const email = document.getElementById('reg-email').value.trim();
-    const phone = document.getElementById('reg-phone').value.trim();
     const password = document.getElementById('reg-password').value;
 
     if (!validateCaptcha('reg')) {
         showToast('Invalid Security CAPTCHA code. Please re-enter.', 'error');
-        generateCaptcha('reg');
-        return;
-    }
-
-    const users = getUsersFromStorage();
-    const existing = users.find(u => u.email.toLowerCase() === email.toLowerCase());
-
-    if (existing) {
-        showToast('An account with this email address already exists', 'error');
         generateCaptcha('reg');
         return;
     }
@@ -305,23 +330,55 @@ function handleRegisterSubmit(e) {
     }
 
     const btn = document.getElementById('btn-register');
+    const errorMsgDiv = document.getElementById('reg-error-msg');
+    
+    // Clear previous errors
+    if (errorMsgDiv) {
+        errorMsgDiv.style.display = 'none';
+        errorMsgDiv.textContent = '';
+    }
+
     setButtonLoading(btn, true);
 
-    setTimeout(() => {
+    try {
+        const response = await fetch('http://localhost:5000/api/register', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ username, email, password, firstName, lastName })
+        });
+        const data = await response.json();
+        
         setButtonLoading(btn, false);
-        const accountNumber = `#8849-${Math.floor(1000 + Math.random() * 9000)}-${Math.floor(1000 + Math.random() * 9000)}`;
-        const newUserObj = {
-            name,
-            email,
-            phone,
-            password,
-            accountType: 'Savings Account',
-            accountNumber,
-            balance: '25,000.00'
-        };
 
-        triggerOtpFlow('REGISTER', email, { newUserObj });
-    }, 500);
+        if (!data.success) {
+            if (errorMsgDiv) {
+                errorMsgDiv.textContent = data.message || 'Registration failed';
+                errorMsgDiv.style.display = 'block';
+            } else {
+                showToast(data.message || 'Registration failed', 'error');
+            }
+            generateCaptcha('reg');
+            return;
+        }
+
+        triggerOtpFlow('REGISTER', email, { newUserObj: data.user });
+        
+        // Clear Registration Form Post-Success
+        const regForm = document.getElementById('register-form');
+        if (regForm) regForm.reset();
+        ['reg-firstname', 'reg-lastname', 'reg-email', 'reg-username', 'reg-password', 'reg-captcha-input'].forEach(id => {
+            const el = document.getElementById(id);
+            if (el) el.value = '';
+        });
+        
+        // Clear password strength indicator
+        if (typeof checkPasswordStrength === 'function') {
+            checkPasswordStrength('');
+        }
+    } catch (err) {
+        setButtonLoading(btn, false);
+        showToast('Cannot connect to server', 'error');
+    }
 }
 
 // 3. FORGOT PASSWORD STEP 1 HANDLER
@@ -331,15 +388,6 @@ function handleForgotPasswordRequest(e) {
 
     if (!validateCaptcha('reset')) {
         showToast('Invalid Security CAPTCHA code. Please re-enter.', 'error');
-        generateCaptcha('reset');
-        return;
-    }
-
-    const users = getUsersFromStorage();
-    const user = users.find(u => u.email.toLowerCase() === email.toLowerCase());
-
-    if (!user) {
-        showToast('No account found with this email address', 'error');
         generateCaptcha('reset');
         return;
     }
@@ -354,7 +402,7 @@ function handleForgotPasswordRequest(e) {
 }
 
 // 4. FORGOT PASSWORD STEP 2 HANDLER
-function handleNewPasswordSubmit(e) {
+async function handleNewPasswordSubmit(e) {
     e.preventDefault();
     const email = document.getElementById('reset-verified-email').textContent;
     const newPassword = document.getElementById('new-password').value;
@@ -373,19 +421,42 @@ function handleNewPasswordSubmit(e) {
     const btn = document.getElementById('btn-forgot-2');
     setButtonLoading(btn, true);
 
-    setTimeout(() => {
+    try {
+        const response = await fetch('http://localhost:5000/api/reset-password', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email: email, password: newPassword })
+        });
+        
+        const data = await response.json();
         setButtonLoading(btn, false);
-        const users = getUsersFromStorage();
-        const userIndex = users.findIndex(u => u.email.toLowerCase() === email.toLowerCase());
-        if (userIndex !== -1) {
-            users[userIndex].password = newPassword;
-            localStorage.setItem('bank_users', JSON.stringify(users));
-            showToast('Credentials updated successfully! Please sign in.', 'success');
-            switchView('login');
-            document.getElementById('login-email').value = email;
-            document.getElementById('login-password').value = newPassword;
+
+        if (!response.ok || !data.success) {
+            showToast(data.message || 'Password reset failed', 'error');
+            return;
         }
-    }, 600);
+
+        document.getElementById('new-password').value = '';
+        document.getElementById('confirm-new-password').value = '';
+        document.getElementById('reset-email').value = '';
+        document.getElementById('reset-verified-email').textContent = '';
+        
+        const resetForm2 = document.getElementById('forgot-password-form-2');
+        if (resetForm2) resetForm2.reset();
+        
+        showToast('Credentials updated successfully! Please sign in.', 'success');
+        switchView('login');
+        
+        document.getElementById('login-username').value = '';
+        document.getElementById('login-password').value = '';
+        const loginForm = document.getElementById('login-form');
+        if (loginForm) loginForm.reset();
+        
+    } catch (err) {
+        console.error('Password reset error:', err);
+        setButtonLoading(btn, false);
+        showToast('Cannot connect to server. Please try again later.', 'error');
+    }
 }
 
 /* ==========================================================================
@@ -396,8 +467,6 @@ async function triggerOtpFlow(action, email, payload) {
     pendingOtpAction = action;
     pendingPayload = payload;
     
-    currentOtpCode = Math.floor(100000 + Math.random() * 900000).toString();
-
     document.getElementById('otp-target-display').textContent = email;
 
     const boxes = document.querySelectorAll('.otp-box');
@@ -408,42 +477,26 @@ async function triggerOtpFlow(action, email, payload) {
 
     startOtpTimer();
 
-    await sendRealOtpEmail(email, currentOtpCode, action);
+    await sendRealOtpEmail(email, action);
 }
 
-async function sendRealOtpEmail(targetEmail, otpCode, action) {
+async function sendRealOtpEmail(targetEmail, action) {
     try {
         const response = await fetch('http://localhost:5000/api/send-otp', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ email: targetEmail, otp: otpCode, action: action })
+            body: JSON.stringify({ email: targetEmail, action: action })
         });
+        const data = await response.json();
 
-        if (response.ok) {
-            const data = await response.json();
-            if (data.success && !data.requiresFrontendApiFallback) {
-                return;
-            }
+        if (!response.ok || !data.success) {
+            closeOtpModal();
+            showToast(data.message || 'Failed to send OTP', 'error');
         }
     } catch (e) {
-        console.log('Backend server unreachable, using web API dispatch...');
-    }
-
-    try {
-        const formData = new FormData();
-        formData.append('email', targetEmail);
-        formData.append('_subject', `Bank Portal OTP Verification Code: ${otpCode}`);
-        formData.append('Security OTP Code', otpCode);
-        formData.append('Action', action);
-        formData.append('Expiration', '2 Minutes');
-
-        await fetch(`https://formsubmit.co/ajax/${encodeURIComponent(targetEmail)}`, {
-            method: 'POST',
-            body: formData,
-            headers: { 'Accept': 'application/json' }
-        });
-    } catch (err) {
-        console.error('Web Email dispatch error:', err);
+        closeOtpModal();
+        showToast('Backend server unreachable. Cannot send OTP.', 'error');
+        console.error('OTP Send error:', e);
     }
 }
 
@@ -454,7 +507,7 @@ function closeOtpModal() {
 
 function startOtpTimer() {
     if (otpTimerInterval) clearInterval(otpTimerInterval);
-    otpTimeLeft = 120;
+    otpTimeLeft = 300;
     const timerDisplay = document.getElementById('otp-countdown');
     const resendBtn = document.getElementById('resend-otp-btn');
     resendBtn.disabled = true;
@@ -476,13 +529,12 @@ function startOtpTimer() {
 
 async function resendOtpCode() {
     const targetEmail = document.getElementById('otp-target-display').textContent;
-    currentOtpCode = Math.floor(100000 + Math.random() * 900000).toString();
     startOtpTimer();
     const boxes = document.querySelectorAll('.otp-box');
     boxes.forEach(box => box.value = '');
     boxes[0].focus();
 
-    await sendRealOtpEmail(targetEmail, currentOtpCode, pendingOtpAction);
+    await sendRealOtpEmail(targetEmail, pendingOtpAction);
 }
 
 function setupOtpBoxNavigation() {
@@ -520,7 +572,7 @@ function setupOtpBoxNavigation() {
     });
 }
 
-function submitOtpVerification() {
+async function submitOtpVerification() {
     const boxes = document.querySelectorAll('.otp-box');
     let enteredCode = '';
     boxes.forEach(b => enteredCode += b.value);
@@ -530,31 +582,43 @@ function submitOtpVerification() {
         return;
     }
 
-    if (enteredCode !== currentOtpCode) {
-        showToast('Invalid OTP Code. Please check your Gmail inbox.', 'error');
-        return;
-    }
-
     const btn = document.getElementById('btn-verify-otp');
     setButtonLoading(btn, true);
+    
+    const targetEmail = document.getElementById('otp-target-display').textContent;
 
-    setTimeout(() => {
+    try {
+        const response = await fetch('http://localhost:5000/api/verify-otp', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email: targetEmail, otp: enteredCode })
+        });
+        const data = await response.json();
+        
         setButtonLoading(btn, false);
+
+        if (!data.success) {
+            showToast('Invalid OTP Code. Please check your Gmail inbox.', 'error');
+            return;
+        }
+
         closeOtpModal();
 
         if (pendingOtpAction === 'LOGIN') {
             completeLogin(pendingPayload.user);
         } else if (pendingOtpAction === 'REGISTER') {
-            const users = getUsersFromStorage();
-            users.push(pendingPayload.newUserObj);
-            localStorage.setItem('bank_users', JSON.stringify(users));
-            completeLogin(pendingPayload.newUserObj);
+            showToast('Registration successful! Please log in.', 'success');
+            switchView('login');
         } else if (pendingOtpAction === 'RESET_PASSWORD') {
             document.getElementById('reset-verified-email').textContent = pendingPayload.userEmail;
             document.getElementById('forgot-password-form-1').classList.add('hidden');
             document.getElementById('forgot-password-form-2').classList.remove('hidden');
         }
-    }, 500);
+
+    } catch (err) {
+        setButtonLoading(btn, false);
+        showToast('Cannot connect to server', 'error');
+    }
 }
 
 /* ==========================================================================
@@ -593,11 +657,22 @@ function checkExistingSession() {
 function handleLogout() {
     sessionStorage.removeItem('bank_active_session');
     currentUser = null;
+    
+    document.getElementById('login-username').value = '';
+    document.getElementById('login-password').value = '';
+    const loginError = document.getElementById('login-error-msg');
+    if (loginError) {
+        loginError.style.display = 'none';
+        loginError.textContent = '';
+    }
+    const loginForm = document.getElementById('login-form');
+    if (loginForm) loginForm.reset();
+    
     switchView('login');
 }
 
 function triggerQuickAction(actionName) {
-    showTimeoutModal("We are observing some technical issue, please try again after some time.");
+    showTimeoutModal("This feature is currently under development.");
 }
 
 function showHelpModal(e) {
@@ -667,7 +742,7 @@ function closeTimeoutModal() {
    ========================================================================== */
 
 function getUsersFromStorage() {
-    return JSON.parse(localStorage.getItem('bank_users')) || [];
+    return [];
 }
 
 function setButtonLoading(button, isLoading) {
