@@ -1,5 +1,5 @@
 import os
-from flask import Flask, request, jsonify, render_template
+from flask import Flask, request, jsonify, render_template, redirect, url_for, g, make_response
 from flask_cors import CORS
 import mysql.connector
 import bcrypt
@@ -9,6 +9,8 @@ from email.message import EmailMessage
 from datetime import datetime, timedelta
 from dotenv import load_dotenv
 import uuid
+import jwt
+from functools import wraps
 
 load_dotenv()
 
@@ -62,6 +64,61 @@ def run_migrations():
         print(f"[MIGRATION ERROR] Could not connect for migrations: {e}")
 
 run_migrations()
+
+# ==========================================================================
+# JWT HELPERS
+# ==========================================================================
+JWT_SECRET = os.environ.get('SECRET_KEY', 'default-dev-key-change-in-prod')
+JWT_ALGORITHM = 'HS256'
+JWT_EXPIRY_MINUTES = 15
+
+def generate_jwt_token(user_id, username):
+    """Generate a short-lived JWT bearing user_id and username."""
+    payload = {
+        'sub': str(user_id),
+        'username': username,
+        'iat': datetime.utcnow(),
+        'exp': datetime.utcnow() + timedelta(minutes=JWT_EXPIRY_MINUTES)
+    }
+    return jwt.encode(payload, JWT_SECRET, algorithm=JWT_ALGORITHM)
+
+def token_required(f):
+    """Decorator: extract + verify Bearer JWT from Authorization header or cookie.
+    - API callers (Accept: application/json) receive JSON 401.
+    - Browser page visits (Accept: text/html) are redirected to / for re-login.
+    """
+    @wraps(f)
+    def decorated(*args, **kwargs):
+        is_browser = 'text/html' in request.headers.get('Accept', '')
+        token = request.cookies.get('bank_jwt_token')
+        if not token:
+            auth_header = request.headers.get('Authorization', '')
+            if auth_header.startswith('Bearer '):
+                token = auth_header.split(' ', 1)[1]
+        if not token:
+            token = request.args.get('token')
+            
+        def handle_unauthorized(msg):
+            if is_browser:
+                resp = redirect(url_for('index'))
+                resp.delete_cookie('bank_jwt_token')
+                return resp
+            return jsonify({'success': False, 'message': msg}), 401
+
+        if not token:
+            return handle_unauthorized('Authorization token missing')
+            
+        try:
+            payload = jwt.decode(token, JWT_SECRET, algorithms=[JWT_ALGORITHM])
+            g.user = payload
+        except jwt.ExpiredSignatureError:
+            return handle_unauthorized('Token expired. Please log in again.')
+        except jwt.InvalidTokenError:
+            return handle_unauthorized('Invalid token.')
+            
+        return f(*args, **kwargs)
+    return decorated
+# ==========================================================================
 
 def get_email_template(action, first_name, otp):
     subject = "Login Verification OTP"
@@ -165,8 +222,20 @@ def send_real_email(to_email, subject, html_body, plain_text):
 def index():
     return render_template('index.html')
 
+@app.route('/overview')
+@token_required
+def overview_protected():
+    """JWT-protected dashboard view. Redirects to / if token missing/invalid."""
+    resp = make_response(render_template('overview.html'))
+    # If a token was provided in the query string (JS fallback), set the HTTP-only cookie now.
+    token_query = request.args.get('token')
+    if token_query:
+        resp.set_cookie('bank_jwt_token', token_query, httponly=True, samesite='Lax', max_age=900)
+    return resp
+
 @app.route('/home/landingPage/homePage')
-def overview():
+def overview_legacy():
+    """Legacy SBI-style URL kept for compatibility."""
     return render_template('overview.html')
 
 @app.route('/home/landingPage/manageRelationship/transactionAccounts')
@@ -227,7 +296,8 @@ def register():
             'accountNumber': account_number,
             'balance': '25,000.00'
         }
-        return jsonify({'success': True, 'user': user_obj})
+        # Registration complete — return redirect signal. No auto-login.
+        return jsonify({'success': True, 'message': 'Registration successful', 'redirect': '/'})
         
     except Exception as e:
         print(f"DB Error: {e}")
@@ -271,6 +341,9 @@ def login():
             cursor.execute("UPDATE users SET failed_attempts=0, lockout_until=NULL WHERE id=%s", (user['id'],))
             conn.commit()
 
+            # Issue JWT token
+            token = generate_jwt_token(user['id'], user['username'])
+
             user_obj = {
                 'username': user['username'],
                 'name': f"{user['first_name']} {user['last_name']}",
@@ -279,7 +352,22 @@ def login():
                 'accountNumber': user['account_number'],
                 'balance': str(user['balance'])
             }
-            return jsonify({'success': True, 'user': user_obj, 'email': user['email']})
+            print(f"[LOGIN OK] JWT issued for user: {username}")
+            resp = jsonify({
+                'success': True,
+                'token': token,
+                'user': user_obj,
+                'redirect': '/overview'
+            })
+            # Set JWT as HttpOnly cookie so browser page navigations carry auth automatically
+            resp.set_cookie(
+                'bank_jwt_token',
+                token,
+                httponly=True,
+                samesite='Lax',
+                max_age=900   # 15 minutes, matching JWT expiry
+            )
+            return resp
         else:
             # Failed attempt
             attempts = user['failed_attempts'] + 1
@@ -301,6 +389,13 @@ def login():
     finally:
         if 'cursor' in locals(): cursor.close()
         if 'conn' in locals(): conn.close()
+
+@app.route('/api/logout', methods=['POST'])
+def logout():
+    resp = jsonify({'success': True, 'message': 'Logged out'})
+    resp.delete_cookie('bank_jwt_token', samesite='Lax')
+    print(f"[LOGOUT] JWT cookie cleared")
+    return resp
 
 @app.route('/api/send-otp', methods=['POST'])
 def send_otp():

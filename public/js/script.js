@@ -19,6 +19,35 @@ const captchas = {
     reset: ''
 };
 
+// ---------------------------------------------------------------------------
+// JWT TOKEN HELPERS
+// ---------------------------------------------------------------------------
+function getJwtToken() {
+    return localStorage.getItem('bank_jwt_token');
+}
+
+function saveJwtToken(token) {
+    localStorage.setItem('bank_jwt_token', token);
+}
+
+function clearJwtToken() {
+    localStorage.removeItem('bank_jwt_token');
+    localStorage.removeItem('bank_user_session');
+}
+
+/**
+ * Authenticated fetch wrapper.
+ * Automatically injects Authorization: Bearer <token> header.
+ * Usage: authFetch('/api/some-protected-endpoint', { method: 'POST', body: ... })
+ */
+async function authFetch(url, options = {}) {
+    const token = getJwtToken();
+    const headers = Object.assign({ 'Content-Type': 'application/json' }, options.headers || {});
+    if (token) headers['Authorization'] = `Bearer ${token}`;
+    return fetch(url, Object.assign({}, options, { headers, credentials: 'include' }));
+}
+// ---------------------------------------------------------------------------
+
 // DOM Content Loaded Handler
 document.addEventListener('DOMContentLoaded', () => {
     setupOtpBoxNavigation();
@@ -255,7 +284,7 @@ function checkPasswordStrength(val) {
 
 // 1. LOGIN HANDLER
 async function handleLoginSubmit(e) {
-    e.preventDefault();
+    if (e) e.preventDefault();
     const username = document.getElementById('login-username').value.trim();
     const password = document.getElementById('login-password').value;
 
@@ -308,7 +337,6 @@ async function handleLoginSubmit(e) {
                 loginCap.disabled = true;
 
                 // Re-clear after disable inside rAF to defeat any browser autofill
-                // that may fire asynchronously after the initial .value = '' call
                 requestAnimationFrame(() => {
                     loginUser.value = '';
                     loginPass.value = '';
@@ -322,25 +350,18 @@ async function handleLoginSubmit(e) {
 
                     if (timeLeft <= 0) {
                         clearInterval(lockoutInterval);
-
-                        // Clear the error banner
                         errorMsgDiv.style.display = 'none';
                         errorMsgDiv.textContent = '';
-
-                        // Re-enable all inputs and button
                         btn.disabled = false;
                         loginUser.disabled = false;
                         loginPass.disabled = false;
                         loginCap.disabled = false;
-
-                        // Auto-refresh CAPTCHA for a clean retry
                         generateCaptcha('login');
                     }
                 }, 1000);
 
             } else {
                 // --- HTTP 401: INCORRECT CREDENTIALS ---
-                // Keep username intact, clear password + captcha, refresh CAPTCHA
                 const loginPass = document.getElementById('login-password');
                 const loginCap = document.getElementById('login-captcha-input');
                 loginPass.value = '';
@@ -350,8 +371,16 @@ async function handleLoginSubmit(e) {
             return;
         }
 
-        // Pass email to triggerOtpFlow so the user gets the OTP
-        triggerOtpFlow('LOGIN', data.email, { user: data.user });
+        // --- LOGIN SUCCESS ---
+        // 1. Persist JWT token and user data
+        saveJwtToken(data.token);
+        localStorage.setItem('bank_user_session', JSON.stringify(data.user));
+        
+        // Explicitly set cookie via JS as a fallback if Set-Cookie header was blocked
+        document.cookie = "bank_jwt_token=" + data.token + "; path=/; max-age=900; samesite=Lax";
+
+        // 2. Redirect to /overview with token parameter fallback
+        window.location.href = '/overview?token=' + encodeURIComponent(data.token);
     } catch (err) {
         setButtonLoading(btn, false);
         showToast('Cannot connect to server', 'error');
@@ -662,7 +691,7 @@ async function submitOtpVerification() {
                 const regData = await regResponse.json();
                 
                 if (regData.success) {
-                    showToast('Registration successful! Please log in.', 'success');
+                    showToast('Account created! Please sign in to continue.', 'success');
                     const regForm = document.getElementById('register-form');
                     if (regForm) regForm.reset();
                     ['reg-firstname', 'reg-lastname', 'reg-email', 'reg-username', 'reg-password', 'reg-captcha-input'].forEach(id => {
@@ -670,7 +699,8 @@ async function submitOtpVerification() {
                         if (el) el.value = '';
                     });
                     if (typeof checkPasswordStrength === 'function') checkPasswordStrength('');
-                    switchView('login');
+                    // Redirect to login page (no auto-login after registration)
+                    window.location.href = regData.redirect || '/';
                 } else {
                     showToast(regData.message || 'Registration failed', 'error');
                 }
@@ -721,32 +751,43 @@ function completeLogin(user) {
 }
 
 function checkExistingSession() {
-    const sessionStr = sessionStorage.getItem('bank_active_session');
-    if (sessionStr) {
+    // DO NOT force redirection here on page load — this causes an infinite loop
+    // if the server cookie is missing/invalid.
+    // We only check localStorage to clear invalid/expired tokens immediately.
+
+    const token = getJwtToken();
+    if (token) {
         try {
-            const user = JSON.parse(sessionStr);
-            completeLogin(user);
-        } catch(e) {
-            sessionStorage.removeItem('bank_active_session');
+            const payload = JSON.parse(atob(token.split('.')[1]));
+            const now = Math.floor(Date.now() / 1000);
+            if (!payload.exp || payload.exp <= now) {
+                // Expired — clear localStorage token
+                clearJwtToken();
+            }
+        } catch (e) {
+            clearJwtToken();
         }
     }
+    // No valid token — stay on login page, clear any stale session data
+    sessionStorage.removeItem('bank_active_session');
 }
 
-function handleLogout() {
+async function handleLogout() {
+    // 1. Call server to clear the HttpOnly JWT cookie
+    try {
+        await fetch('http://localhost:5000/api/logout', {
+            method: 'POST',
+            credentials: 'include'
+        });
+    } catch (e) {
+        // Continue logout even if server unreachable
+    }
+    // 2. Clear localStorage token
+    clearJwtToken();
     sessionStorage.removeItem('bank_active_session');
     currentUser = null;
-    
-    document.getElementById('login-username').value = '';
-    document.getElementById('login-password').value = '';
-    const loginError = document.getElementById('login-error-msg');
-    if (loginError) {
-        loginError.style.display = 'none';
-        loginError.textContent = '';
-    }
-    const loginForm = document.getElementById('login-form');
-    if (loginForm) loginForm.reset();
-    
-    switchView('login');
+    // 3. Redirect to login page
+    window.location.href = '/';
 }
 
 function triggerQuickAction(actionName) {
