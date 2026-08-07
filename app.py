@@ -1,5 +1,5 @@
 import os
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, render_template
 from flask_cors import CORS
 import mysql.connector
 import bcrypt
@@ -12,7 +12,7 @@ import uuid
 
 load_dotenv()
 
-app = Flask(__name__)
+app = Flask(__name__, static_folder='public', static_url_path='/public')
 CORS(app)
 
 DB_CONFIG = {
@@ -121,6 +121,20 @@ def send_real_email(to_email, subject, html_body, plain_text):
     except Exception as e:
         print(f"Email error: {e}")
         return False
+
+# --- VIEW ROUTES ---
+@app.route('/')
+def index():
+    return render_template('index.html')
+
+@app.route('/home/landingPage/homePage')
+def overview():
+    return render_template('overview.html')
+
+@app.route('/home/landingPage/manageRelationship/transactionAccounts')
+def accounts():
+    return render_template('accounts.html')
+# -------------------
 
 @app.route('/api/register', methods=['POST'])
 def register():
