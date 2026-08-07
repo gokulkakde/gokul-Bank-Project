@@ -285,17 +285,66 @@ async function handleLoginSubmit(e) {
         setButtonLoading(btn, false);
 
         if (!data.success) {
-            if (data.attempts_remaining !== undefined || data.lockout) {
-                // Show inline error for passwords/lockouts
-                errorMsgDiv.textContent = data.message;
-                errorMsgDiv.style.display = 'block';
+            // Always show inline error message
+            errorMsgDiv.textContent = data.message;
+            errorMsgDiv.style.display = 'block';
+
+            if (response.status === 423 && data.lockout && data.remaining_seconds) {
+                // --- HTTP 423: ACCOUNT LOCKED ---
+                let timeLeft = data.remaining_seconds;
+                const loginUser = document.getElementById('login-username');
+                const loginPass = document.getElementById('login-password');
+                const loginCap = document.getElementById('login-captcha-input');
+
+                // Immediately clear ALL input fields (username, password, captcha)
+                loginUser.value = '';
+                loginPass.value = '';
+                loginCap.value = '';
+
+                // Disable all inputs and the login button
+                btn.disabled = true;
+                loginUser.disabled = true;
+                loginPass.disabled = true;
+                loginCap.disabled = true;
+
+                // Re-clear after disable inside rAF to defeat any browser autofill
+                // that may fire asynchronously after the initial .value = '' call
+                requestAnimationFrame(() => {
+                    loginUser.value = '';
+                    loginPass.value = '';
+                    loginCap.value = '';
+                });
+
+                // Real-time countdown: update every 1s
+                const lockoutInterval = setInterval(() => {
+                    timeLeft--;
+                    errorMsgDiv.textContent = `Account locked. Please wait ${timeLeft}s...`;
+
+                    if (timeLeft <= 0) {
+                        clearInterval(lockoutInterval);
+
+                        // Clear the error banner
+                        errorMsgDiv.style.display = 'none';
+                        errorMsgDiv.textContent = '';
+
+                        // Re-enable all inputs and button
+                        btn.disabled = false;
+                        loginUser.disabled = false;
+                        loginPass.disabled = false;
+                        loginCap.disabled = false;
+
+                        // Auto-refresh CAPTCHA for a clean retry
+                        generateCaptcha('login');
+                    }
+                }, 1000);
+
             } else {
-                // Fallback to toast for generic errors
-                showToast(data.message || 'Invalid username or password', 'error');
-            }
-            
-            // Only generate new captcha if it's not a lockout
-            if (!data.lockout) {
+                // --- HTTP 401: INCORRECT CREDENTIALS ---
+                // Keep username intact, clear password + captcha, refresh CAPTCHA
+                const loginPass = document.getElementById('login-password');
+                const loginCap = document.getElementById('login-captcha-input');
+                loginPass.value = '';
+                loginCap.value = '';
                 generateCaptcha('login');
             }
             return;
@@ -341,40 +390,9 @@ async function handleRegisterSubmit(e) {
     setButtonLoading(btn, true);
 
     try {
-        const response = await fetch('http://localhost:5000/api/register', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ username, email, password, firstName, lastName })
-        });
-        const data = await response.json();
-        
         setButtonLoading(btn, false);
-
-        if (!data.success) {
-            if (errorMsgDiv) {
-                errorMsgDiv.textContent = data.message || 'Registration failed';
-                errorMsgDiv.style.display = 'block';
-            } else {
-                showToast(data.message || 'Registration failed', 'error');
-            }
-            generateCaptcha('reg');
-            return;
-        }
-
-        triggerOtpFlow('REGISTER', email, { newUserObj: data.user });
-        
-        // Clear Registration Form Post-Success
-        const regForm = document.getElementById('register-form');
-        if (regForm) regForm.reset();
-        ['reg-firstname', 'reg-lastname', 'reg-email', 'reg-username', 'reg-password', 'reg-captcha-input'].forEach(id => {
-            const el = document.getElementById(id);
-            if (el) el.value = '';
-        });
-        
-        // Clear password strength indicator
-        if (typeof checkPasswordStrength === 'function') {
-            checkPasswordStrength('');
-        }
+        const payload = { username, email, password, firstName, lastName };
+        triggerOtpFlow('REGISTER', email, payload);
     } catch (err) {
         setButtonLoading(btn, false);
         showToast('Cannot connect to server', 'error');
@@ -425,16 +443,38 @@ async function handleNewPasswordSubmit(e) {
         const response = await fetch('http://localhost:5000/api/reset-password', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
+            credentials: 'include',
             body: JSON.stringify({ email: email, password: newPassword })
         });
         
         const data = await response.json();
         setButtonLoading(btn, false);
 
+        // Helper refs for the two password fields and inline error div
+        const newPwField = document.getElementById('new-password');
+        const confirmPwField = document.getElementById('confirm-new-password');
+        const resetErrDiv = document.getElementById('reset-pw-error-msg');
+
         if (!response.ok || !data.success) {
-            showToast(data.message || 'Password reset failed', 'error');
+            if (response.status === 400 && data.error === 'same_password') {
+                // Show inline red error directly below Confirm New Password
+                resetErrDiv.textContent = data.message;
+                resetErrDiv.style.display = 'block';
+                // Immediately clear both password fields for a fresh re-entry
+                newPwField.value = '';
+                confirmPwField.value = '';
+                newPwField.focus();
+            } else {
+                // Generic errors go to toast
+                resetErrDiv.style.display = 'none';
+                showToast(data.message || 'Password reset failed', 'error');
+            }
             return;
         }
+
+        // Clear any residual inline error on success
+        resetErrDiv.style.display = 'none';
+        resetErrDiv.textContent = '';
 
         document.getElementById('new-password').value = '';
         document.getElementById('confirm-new-password').value = '';
@@ -444,7 +484,7 @@ async function handleNewPasswordSubmit(e) {
         const resetForm2 = document.getElementById('forgot-password-form-2');
         if (resetForm2) resetForm2.reset();
         
-        showToast('Credentials updated successfully! Please sign in.', 'success');
+        showToast('Password updated successfully! Please login.', 'success');
         switchView('login');
         
         document.getElementById('login-username').value = '';
@@ -482,10 +522,15 @@ async function triggerOtpFlow(action, email, payload) {
 
 async function sendRealOtpEmail(targetEmail, action) {
     try {
+        const bodyData = { email: targetEmail, action: action };
+        if (action === 'REGISTER' && typeof pendingPayload !== 'undefined' && pendingPayload && pendingPayload.username) {
+            bodyData.username = pendingPayload.username;
+        }
+        
         const response = await fetch('http://localhost:5000/api/send-otp', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ email: targetEmail, action: action })
+            body: JSON.stringify(bodyData)
         });
         const data = await response.json();
 
@@ -591,7 +636,8 @@ async function submitOtpVerification() {
         const response = await fetch('http://localhost:5000/api/verify-otp', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ email: targetEmail, otp: enteredCode })
+            credentials: 'include',
+            body: JSON.stringify({ email: targetEmail, otp: enteredCode, action: pendingOtpAction })
         });
         const data = await response.json();
         
@@ -607,12 +653,44 @@ async function submitOtpVerification() {
         if (pendingOtpAction === 'LOGIN') {
             completeLogin(pendingPayload.user);
         } else if (pendingOtpAction === 'REGISTER') {
-            showToast('Registration successful! Please log in.', 'success');
-            switchView('login');
+            try {
+                const regResponse = await fetch('http://localhost:5000/api/register', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(pendingPayload)
+                });
+                const regData = await regResponse.json();
+                
+                if (regData.success) {
+                    showToast('Registration successful! Please log in.', 'success');
+                    const regForm = document.getElementById('register-form');
+                    if (regForm) regForm.reset();
+                    ['reg-firstname', 'reg-lastname', 'reg-email', 'reg-username', 'reg-password', 'reg-captcha-input'].forEach(id => {
+                        const el = document.getElementById(id);
+                        if (el) el.value = '';
+                    });
+                    if (typeof checkPasswordStrength === 'function') checkPasswordStrength('');
+                    switchView('login');
+                } else {
+                    showToast(regData.message || 'Registration failed', 'error');
+                }
+            } catch (e) {
+                showToast('Registration server error', 'error');
+            }
         } else if (pendingOtpAction === 'RESET_PASSWORD') {
             document.getElementById('reset-verified-email').textContent = pendingPayload.userEmail;
             document.getElementById('forgot-password-form-1').classList.add('hidden');
             document.getElementById('forgot-password-form-2').classList.remove('hidden');
+
+            // Auto-dismiss the OTP verified banner after 3.5 seconds
+            const otpBanner = document.querySelector('#forgot-password-form-2 .step-indicator');
+            if (otpBanner) {
+                setTimeout(() => {
+                    otpBanner.classList.add('fade-out');
+                    // Remove from layout after transition completes (400ms)
+                    setTimeout(() => { otpBanner.style.display = 'none'; }, 420);
+                }, 3500);
+            }
         }
 
     } catch (err) {

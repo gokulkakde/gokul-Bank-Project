@@ -4,13 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SPX BANK - Net Banking</title>
-    <link rel="icon" type="image/png" href="/public/assets/favicon/favicon.png">
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='assets/favicon/favicon.png') }}">
     <meta name="description" content="Secure Online Net Banking Portal by SPX BANK.">
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600;700&family=Roboto+Mono:wght@500;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="/public/css/style.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 <body>
 
@@ -353,6 +353,9 @@
                                         </div>
                                     </div>
 
+                                    <!-- Inline error: shown when new password matches old password -->
+                                    <div id="reset-pw-error-msg" class="sbi-reset-error"></div>
+
                                     <div class="sbi-submit-container">
                                         <button type="submit" class="sbi-btn-login" id="btn-forgot-2">
                                             <span class="btn-text">Update & Sign In</span>
@@ -672,6 +675,6 @@
 
     </div>
 
-    <script src="/public/js/script.js"></script>
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
 </body>
 </html>
