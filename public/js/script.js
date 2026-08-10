@@ -764,6 +764,14 @@ function handleLogout() {
 }
 
 function triggerQuickAction(actionName) {
+    if (actionName === 'Overview') {
+        window.location.href = '/home/landingPage/homePage';
+        return;
+    }
+    if (actionName === 'Accounts dashboard' || actionName === 'Accounts') {
+        window.location.href = '/home/landingPage/manageRelationship/transactionAccounts';
+        return;
+    }
     showTimeoutModal("This feature is currently under development.");
 }
 
@@ -879,3 +887,62 @@ function showToast(message, type = 'info') {
         setTimeout(() => toast.remove(), 300);
     }, 4500);
 }
+let previouslyActiveTab = null;
+
+document.addEventListener('DOMContentLoaded', () => {
+  const paymentsBtn = document.getElementById('nav-payments-tab');
+  const megaMenu = document.querySelector('.spx-mega-menu');
+  const overlay = document.getElementById('mega-menu-overlay');
+
+  if (paymentsBtn && megaMenu) {
+    paymentsBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      
+      const isOpening = !megaMenu.classList.contains('active');
+      
+      if (isOpening) {
+        // Dynamically center the menu under the Payments tab
+        const tabRect = paymentsBtn.getBoundingClientRect();
+        const parentRect = megaMenu.offsetParent
+            ? megaMenu.offsetParent.getBoundingClientRect()
+            : { left: 0 };
+        const tabCentre = tabRect.left + tabRect.width / 2 - parentRect.left;
+        const menuHalf = megaMenu.offsetWidth / 2 || 270; // fallback 270 = 540/2
+        megaMenu.style.left = (tabCentre - menuHalf) + 'px';
+        megaMenu.style.transform = 'none'; // JS handles position; CSS transform not needed
+
+        megaMenu.classList.add('active');
+        paymentsBtn.classList.add('mega-active');
+        if (overlay) overlay.classList.add('active');
+        
+        const activeTab = document.querySelector('.spx-nav-item.active');
+        if (activeTab && activeTab !== paymentsBtn) {
+            previouslyActiveTab = activeTab;
+            activeTab.classList.remove('active');
+        }
+      } else {
+        megaMenu.classList.remove('active');
+        paymentsBtn.classList.remove('mega-active');
+        if (overlay) overlay.classList.remove('active');
+        
+        if (previouslyActiveTab) {
+            previouslyActiveTab.classList.add('active');
+            previouslyActiveTab = null;
+        }
+      }
+    });
+
+    document.addEventListener('click', (e) => {
+      if (!paymentsBtn.contains(e.target) && !megaMenu.contains(e.target)) {
+        megaMenu.classList.remove('active');
+        paymentsBtn.classList.remove('mega-active');
+        if (overlay) overlay.classList.remove('active');
+        
+        if (previouslyActiveTab) {
+            previouslyActiveTab.classList.add('active');
+            previouslyActiveTab = null;
+        }
+      }
+    });
+  }
+});

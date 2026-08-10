@@ -150,13 +150,13 @@ body {
    ========================================================================== */
 .spx-main-header {
     background-color: #ffffff;
-    border-bottom: 2px solid #e6e1eb;
+    border-bottom: none !important;
     padding: 0.75rem 1.5rem 0 1.5rem;
     min-height: 64px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03);
+    box-shadow: none !important;
     position: sticky;
     top: 0;
-    z-index: 99;
+    z-index: 1001;
 }
 
 .spx-header-container {
@@ -258,6 +258,9 @@ body {
     position: relative;
     bottom: -1px;
     transition: var(--transition);
+    display: inline-block;
+    height: 38px;
+    box-sizing: border-box;
 }
 
 .spx-nav-item:hover {
@@ -265,19 +268,42 @@ body {
 }
 
 .spx-nav-item.active {
-    background: #f3ecf7;
+    background: #f4f3f8;
     color: #3c1253;
-    font-weight: 700;
+    border-bottom-left-radius: 0 !important;
+    border-bottom-right-radius: 0 !important;
+    margin-bottom: -1px !important;
 }
 
-.spx-nav-item.active::after {
+/* Indicator bar — sits inside the pill using ::before */
+.spx-nav-item.active::before {
     content: '';
+    position: absolute;
+    bottom: 2px;
+    left: 50%;
+    transform: translateX(-50%);
     width: 20px;
     height: 3.5px;
     background-color: #3c1253;
     border-radius: 2px;
-    margin: 4px auto 0 auto;
     display: block;
+    z-index: 2;
+}
+
+/* Bridge — full-width colour fill that seals any gap to the navbar baseline */
+.spx-nav-item.active::after,
+.spx-nav-item.mega-active::after {
+    content: '';
+    position: absolute;
+    bottom: -5px;
+    left: 0;
+    right: 0;
+    width: 100%;
+    height: 6px;
+    background: #f4f3f8 !important;
+    border-radius: 0;
+    display: block;
+    z-index: 1005;
 }
 
 .spx-header-actions {
@@ -1790,4 +1816,107 @@ body:has(#forgot-password-view:not(.hidden)) .spx-global-back-container {
         flex-direction: column;
         gap: 1.25rem;
     }
+}
+
+/* Mega Menu Styles */
+.spx-mega-overlay {
+    position: fixed;
+    top: 102px !important; /* 38px purple top bar + 64px white header = exact baseline */
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.35);
+    z-index: 999;
+    pointer-events: auto;
+    display: none;
+}
+.spx-mega-overlay.active {
+    display: block !important;
+}
+
+.spx-mega-menu {
+    position: absolute;
+    top: 100% !important;
+    left: 0; /* Overridden dynamically by JS — centres under Payments tab */
+    width: 540px;
+    background: #f4f3f8;
+    border-top-left-radius: 0 !important;
+    border-top-right-radius: 0 !important;
+    border-bottom-left-radius: 16px !important;
+    border-bottom-right-radius: 16px !important;
+    box-shadow: 0 14px 28px rgba(0, 0, 0, 0.1);
+    padding: 1.25rem 1.5rem;
+    display: none;
+    z-index: 1002;
+    margin-top: -1px;
+    border-top: none !important;
+    outline: none !important;
+}
+
+.spx-mega-menu.active {
+    display: block !important;
+}
+
+.spx-nav-item.mega-active {
+    background: #f4f3f8 !important;
+    color: #3c1253 !important;
+    border-bottom: none !important;
+    border-bottom-left-radius: 0 !important;
+    border-bottom-right-radius: 0 !important;
+    margin-bottom: -1px !important; /* Restore: touch navbar baseline like all other tabs */
+    padding-bottom: 6px !important;
+    position: relative;
+    z-index: 1003;
+}
+
+/* mega-active::after bridge is now unified with .spx-nav-item.active::after (see nav section above) */
+
+.spx-mega-menu-inner {
+    display: flex;
+    gap: 1.5rem;
+}
+
+.spx-mega-col {
+    flex: 1;
+}
+
+.spx-mega-heading {
+    font-size: 1rem;
+    font-weight: 700;
+    color: #333333;
+    margin-bottom: 1.5rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.spx-mega-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+.spx-mega-list li {
+    display: flex;
+    align-items: center;
+    padding: 1rem 0;
+    cursor: pointer;
+    border-bottom: 1px solid #e2e8f0;
+    color: #4a5568;
+    transition: all 0.2s ease;
+}
+
+.spx-mega-list li:last-child {
+    border-bottom: none;
+}
+
+.spx-mega-list li:hover {
+    color: #551a8b;
+    transform: translateX(4px);
+}
+
+.mega-icon {
+    margin-right: 1rem;
+    color: #5a2d82;
 }

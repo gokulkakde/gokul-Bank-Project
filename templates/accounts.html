@@ -62,7 +62,7 @@
                     <div class="spx-nav-menu logged-in-menu">
                         <a href="/home/landingPage/homePage" class="spx-nav-item">Overview</a>
                         <a href="/home/landingPage/manageRelationship/transactionAccounts" class="spx-nav-item active">Accounts</a>
-                        <a href="#" class="spx-nav-item" onclick="triggerQuickAction('Payments & Transfers')">Payments</a>
+                        <a id="nav-payments-tab" class="spx-nav-item" href="#">Payments</a>
                         <a href="#" class="spx-nav-item" onclick="triggerQuickAction('Deposits services')">Deposits</a>
                         <a href="#" class="spx-nav-item" onclick="triggerQuickAction('Loans portal')">Loans</a>
                         <a href="#" class="spx-nav-item" onclick="triggerQuickAction('Cards management')">Cards</a>
@@ -71,6 +71,8 @@
                         <a href="#" class="spx-nav-item" onclick="triggerQuickAction('Other Services')">Services</a>
                     </div>
                 </nav>
+
+                {% include 'components/mega_menu.html' %}
 
                 <div class="spx-header-actions">
                     <button class="spx-header-icon-btn" onclick="triggerQuickAction('Search Portal')">
