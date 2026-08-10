@@ -724,7 +724,7 @@ function checkExistingSession() {
     const sessionStr = sessionStorage.getItem('bank_active_session');
     if (!sessionStr) return;
 
-    const onOverviewPage = window.location.pathname === '/home/landingPage/homePage';
+    const onOverviewPage = window.location.pathname.startsWith('/home/landingPage/');
 
     try {
         const user = JSON.parse(sessionStr);
