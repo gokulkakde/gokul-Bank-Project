@@ -717,36 +717,50 @@ function completeLogin(user) {
 
     document.getElementById('last-login-time').textContent = `Just Now • ${new Date().toLocaleTimeString()} (Gmail OTP Verified)`;
 
-    switchView('dashboard');
+    window.location.href = '/home/landingPage/homePage';
 }
 
 function checkExistingSession() {
     const sessionStr = sessionStorage.getItem('bank_active_session');
-    if (sessionStr) {
-        try {
-            const user = JSON.parse(sessionStr);
-            completeLogin(user);
-        } catch(e) {
-            sessionStorage.removeItem('bank_active_session');
+    if (!sessionStr) return;
+
+    const onOverviewPage = window.location.pathname === '/home/landingPage/homePage';
+
+    try {
+        const user = JSON.parse(sessionStr);
+        if (onOverviewPage) {
+            // Already on dashboard — just populate the DOM, do NOT redirect.
+            currentUser = user;
+            const nameEl = document.getElementById('dash-user-name');
+            const accEl  = document.getElementById('dash-acc-num');
+            const typeEl = document.getElementById('dash-acc-type');
+            const balEl  = document.getElementById('dash-balance');
+            const avEl   = document.getElementById('dash-avatar');
+            const tsEl   = document.getElementById('last-login-time');
+            if (nameEl) nameEl.textContent = user.name;
+            if (accEl)  accEl.textContent  = `ACC: ${user.accountNumber}`;
+            if (typeEl) typeEl.textContent  = user.accountType || 'Premier Vault Account';
+            if (balEl)  balEl.textContent   = user.balance || '148,920.50';
+            if (avEl) {
+                const initials = user.name.split(' ').map(n => n[0]).join('').toUpperCase().substring(0, 2);
+                avEl.textContent = initials || 'JD';
+            }
+            if (tsEl) tsEl.textContent = `Last Session • (Gmail OTP Verified)`;
+        } else {
+            // On the login SPA — redirect to dashboard since session is valid.
+            window.location.href = '/home/landingPage/homePage';
         }
+    } catch(e) {
+        sessionStorage.removeItem('bank_active_session');
     }
 }
 
 function handleLogout() {
     sessionStorage.removeItem('bank_active_session');
     currentUser = null;
-    
-    document.getElementById('login-username').value = '';
-    document.getElementById('login-password').value = '';
-    const loginError = document.getElementById('login-error-msg');
-    if (loginError) {
-        loginError.style.display = 'none';
-        loginError.textContent = '';
-    }
-    const loginForm = document.getElementById('login-form');
-    if (loginForm) loginForm.reset();
-    
-    switchView('login');
+    // Navigate to server-side logout route which clears any server session
+    // and redirects to /registration/welcome.
+    window.location.href = '/logout';
 }
 
 function triggerQuickAction(actionName) {

@@ -1,5 +1,5 @@
 import os
-from flask import Flask, request, jsonify, render_template
+from flask import Flask, request, jsonify, render_template, redirect
 from flask_cors import CORS
 import mysql.connector
 import bcrypt
@@ -162,12 +162,29 @@ def send_real_email(to_email, subject, html_body, plain_text):
 
 # --- VIEW ROUTES ---
 @app.route('/')
+def root():
+    """Redirect root to canonical welcome URL."""
+    return redirect('/registration/welcome')
+
+@app.route('/registration/welcome')
 def index():
+    """Entry point: Login & Registration SPA."""
+    return render_template('index.html')
+
+@app.route('/registration/account-identification')
+def password_recovery():
+    """Password Recovery landing — serves the same SPA with the forgot-password view."""
     return render_template('index.html')
 
 @app.route('/home/landingPage/homePage')
 def overview():
+    """Main authenticated dashboard."""
     return render_template('overview.html')
+
+@app.route('/logout')
+def logout_redirect():
+    """Server-side logout: instructs the client back to the welcome / login page."""
+    return redirect('/registration/welcome')
 
 @app.route('/home/landingPage/manageRelationship/transactionAccounts')
 def accounts():
