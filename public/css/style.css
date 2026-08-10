@@ -1,22 +1,22 @@
-/* ==========================================================================
+﻿/* ==========================================================================
    SPX BANK NET BANKING PORTAL DESIGN STYLING
    ========================================================================== */
 
 :root {
-    /* SBI Palette */
-    --sbi-dark-purple: #3c1253;      /* Deep violet header background */
-    --sbi-accent-purple: #6d1c7f;    /* Primary logo/button purple */
-    --sbi-light-purple: #f3ecf7;     /* Background light violet accent */
-    --sbi-text-dark: #222222;
-    --sbi-text-gray: #555555;
-    --sbi-border-color: #dcd3e4;
-    --sbi-orange: #f26f21;           /* Ring orange accent */
-    --sbi-blue: #00a2e8;             /* SBI circle keyhole blue */
+    /* SPX Palette */
+    --spx-dark-purple: #3c1253;      /* Deep violet header background */
+    --spx-accent-purple: #6d1c7f;    /* Primary logo/button purple */
+    --spx-light-purple: #f3ecf7;     /* Background light violet accent */
+    --spx-text-dark: #222222;
+    --spx-text-gray: #555555;
+    --spx-border-color: #dcd3e4;
+    --spx-orange: #f26f21;           /* Ring orange accent */
+    --spx-blue: #00a2e8;             /* SPX circle keyhole blue */
 
-    --font-sbi: 'Open Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    --font-spx: 'Open Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
     --font-mono: 'Roboto Mono', monospace;
-    --sbi-shadow: 0 4px 15px rgba(60, 18, 83, 0.08);
-    --sbi-card-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+    --spx-shadow: 0 4px 15px rgba(60, 18, 83, 0.08);
+    --spx-card-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
     
     --radius-sm: 4px;
     --radius-md: 8px;
@@ -29,13 +29,13 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    font-family: var(--font-sbi);
+    font-family: var(--font-spx);
     -webkit-font-smoothing: antialiased;
 }
 
 body {
     background-color: #faf8fc;
-    color: var(--sbi-text-dark);
+    color: var(--spx-text-dark);
     min-height: 100vh;
     display: flex;
     flex-direction: column;
@@ -51,17 +51,17 @@ body {
 }
 
 /* ==========================================================================
-   1. SBI TOP NAV STRIP
+   1. SPX TOP NAV STRIP
    ========================================================================== */
-.sbi-top-nav {
-    background-color: var(--sbi-dark-purple);
+.spx-top-nav {
+    background-color: var(--spx-dark-purple);
     color: #e6dbf0;
     font-size: 0.72rem;
     padding: 0.35rem 1.5rem;
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-.sbi-top-nav-container {
+.spx-top-nav-container {
     max-width: 1240px;
     margin: 0 auto;
     display: flex;
@@ -69,13 +69,13 @@ body {
     align-items: center;
 }
 
-.sbi-top-nav-left, .sbi-top-nav-right {
+.spx-top-nav-left, .spx-top-nav-right {
     display: flex;
     align-items: center;
     gap: 0.95rem;
 }
 
-.sbi-top-tab {
+.spx-top-tab {
     background-color: rgba(255, 255, 255, 0.15);
     color: #ffffff;
     font-weight: 700;
@@ -86,35 +86,35 @@ body {
     text-transform: uppercase;
 }
 
-.sbi-top-link {
+.spx-top-link {
     color: #dfd2ec;
     text-decoration: none;
     transition: var(--transition);
 }
 
-.sbi-top-link:hover {
+.spx-top-link:hover {
     color: #ffffff;
     text-decoration: underline;
 }
 
-.sbi-icon-link {
+.spx-icon-link {
     display: inline-flex;
     align-items: center;
     gap: 0.3rem;
 }
 
-.sbi-lang-selector {
+.spx-lang-selector {
     display: flex;
     align-items: center;
     gap: 0.25rem;
     cursor: pointer;
 }
 
-.sbi-top-divider {
+.spx-top-divider {
     color: rgba(255, 255, 255, 0.15);
 }
 
-.sbi-font-btn {
+.spx-font-btn {
     background: none;
     border: none;
     color: #e6dbf0;
@@ -124,14 +124,14 @@ body {
     padding: 0 2px;
 }
 
-.sbi-font-btn:hover {
+.spx-font-btn:hover {
     color: #ffffff;
 }
 
 /* ==========================================================================
-   2. SBI MAIN BRANDING HEADER
+   2. SPX MAIN BRANDING HEADER
    ========================================================================== */
-.sbi-main-header {
+.spx-main-header {
     background-color: #ffffff;
     border-bottom: 2px solid #e6e1eb;
     padding: 0.75rem 1.5rem;
@@ -141,7 +141,7 @@ body {
     z-index: 99;
 }
 
-.sbi-header-container {
+.spx-header-container {
     max-width: 1240px;
     margin: 0 auto;
     display: flex;
@@ -150,7 +150,7 @@ body {
 }
 
 /* Logo Styling */
-.sbi-logo-block {
+.spx-logo-block {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
@@ -169,27 +169,27 @@ body {
     white-space: nowrap;
 }
 
-.sbi-logo-ring {
+.spx-logo-ring {
     width: 24px;
     height: 24px;
-    border: 3.5px solid var(--sbi-orange);
+    border: 3.5px solid var(--spx-orange);
     border-radius: 50%;
     margin: 0 4px;
     position: relative;
     display: inline-block;
 }
 
-.sbi-ring-dot {
+.spx-ring-dot {
     width: 7px;
     height: 7px;
-    background-color: var(--sbi-blue);
+    background-color: var(--spx-blue);
     border-radius: 50%;
     position: absolute;
     top: 5px;
     left: 5px;
 }
 
-.sbi-brand-text {
+.spx-brand-text {
     font-size: 1.55rem;
     font-weight: 700;
     color: #004c8c;
@@ -207,7 +207,7 @@ body {
 }
 
 /* Nav Menu */
-.sbi-main-nav {
+.spx-main-nav {
     flex-grow: 1;
     margin-left: 2rem;
     margin-right: 2rem;
@@ -215,7 +215,7 @@ body {
     align-items: center;
 }
 
-.sbi-nav-menu {
+.spx-nav-menu {
     display: flex;
     align-items: center;
     justify-content: space-evenly;
@@ -223,8 +223,8 @@ body {
     gap: 0.5rem;
 }
 
-.sbi-nav-item {
-    color: var(--sbi-text-gray);
+.spx-nav-item {
+    color: var(--spx-text-gray);
     text-decoration: none;
     font-size: 0.85rem;
     font-weight: 600;
@@ -233,35 +233,35 @@ body {
     transition: var(--transition);
 }
 
-.sbi-nav-item:hover {
-    color: var(--sbi-accent-purple);
+.spx-nav-item:hover {
+    color: var(--spx-accent-purple);
 }
 
-.sbi-nav-item.active {
-    color: var(--sbi-accent-purple);
+.spx-nav-item.active {
+    color: var(--spx-accent-purple);
     font-weight: 700;
 }
 
-.sbi-nav-item.active::after {
+.spx-nav-item.active::after {
     content: '';
     position: absolute;
     bottom: -0.75rem;
     left: 0;
     right: 0;
     height: 3px;
-    background-color: var(--sbi-accent-purple);
+    background-color: var(--spx-accent-purple);
 }
 
-.sbi-header-actions {
+.spx-header-actions {
     display: flex;
     align-items: center;
     gap: 1rem;
 }
 
-.sbi-header-icon-btn {
+.spx-header-icon-btn {
     background: none;
     border: none;
-    color: var(--sbi-text-gray);
+    color: var(--spx-text-gray);
     cursor: pointer;
     display: flex;
     align-items: center;
@@ -269,11 +269,11 @@ body {
     transition: var(--transition);
 }
 
-.sbi-header-icon-btn:hover {
-    color: var(--sbi-accent-purple);
+.spx-header-icon-btn:hover {
+    color: var(--spx-accent-purple);
 }
 
-.sbi-user-badge {
+.spx-user-badge {
     display: flex;
     align-items: center;
     gap: 0.45rem;
@@ -284,11 +284,11 @@ body {
     cursor: pointer;
 }
 
-.sbi-avatar-initials {
+.spx-avatar-initials {
     width: 28px;
     height: 28px;
     flex-shrink: 0;
-    background-color: var(--sbi-accent-purple);
+    background-color: var(--spx-accent-purple);
     color: #ffffff;
     border-radius: 50%;
     font-size: 0.72rem;
@@ -298,14 +298,14 @@ body {
     justify-content: center;
 }
 
-.sbi-user-profile-label {
+.spx-user-profile-label {
     font-size: 0.78rem;
     font-weight: 600;
-    color: var(--sbi-accent-purple);
+    color: var(--spx-accent-purple);
 }
 
-.sbi-logout-btn {
-    background-color: var(--sbi-dark-purple);
+.spx-logout-btn {
+    background-color: var(--spx-dark-purple);
     color: #ffffff;
     border: none;
     padding: 0.45rem 1rem;
@@ -316,21 +316,21 @@ body {
     transition: var(--transition);
 }
 
-.sbi-logout-btn:hover {
-    background-color: var(--sbi-accent-purple);
+.spx-logout-btn:hover {
+    background-color: var(--spx-accent-purple);
     box-shadow: 0 4px 10px rgba(109, 28, 127, 0.2);
 }
 
 /* ==========================================================================
    3. AUTH LAYOUT & SPLIT VIEW
    ========================================================================== */
-.sbi-portal-body {
+.spx-portal-body {
     flex-grow: 1;
     display: flex;
     flex-direction: column;
 }
 
-.sbi-auth-container {
+.spx-auth-container {
     flex-grow: 1;
     display: flex;
     flex-direction: column;
@@ -340,7 +340,7 @@ body {
     position: relative;
 }
 
-.sbi-auth-split {
+.spx-auth-split {
     max-width: 1140px;
     width: 100%;
     margin: auto;
@@ -353,12 +353,12 @@ body {
 }
 
 /* Left welcome text block */
-.sbi-welcome-panel {
+.spx-welcome-panel {
     flex-basis: 52%;
-    color: var(--sbi-dark-purple);
+    color: var(--spx-dark-purple);
 }
 
-.sbi-hello-title {
+.spx-hello-title {
     font-size: 5rem;
     font-weight: 700;
     color: #9f218c;
@@ -366,26 +366,26 @@ body {
     margin-bottom: 0.5rem;
 }
 
-.sbi-welcome-subtitle {
+.spx-welcome-subtitle {
     font-size: 1.6rem;
     font-weight: 600;
-    color: var(--sbi-dark-purple);
+    color: var(--spx-dark-purple);
     margin-bottom: 2rem;
 }
 
-.sbi-new-user-section {
+.spx-new-user-section {
     border-top: 1px dashed rgba(109, 28, 127, 0.25);
     border-bottom: 1px dashed rgba(109, 28, 127, 0.25);
     padding: 1.5rem 0;
     margin-bottom: 1.5rem;
 }
 
-body:has(#register-view:not(.hidden)) .sbi-new-user-section {
+body:has(#register-view:not(.hidden)) .spx-new-user-section {
     display: none;
 }
 
 /* Registration Benefits Section Styles */
-.sbi-register-benefits-section {
+.spx-register-benefits-section {
     display: none; /* Hidden by default (on login page) */
     border-top: 1px dashed rgba(109, 28, 127, 0.25);
     padding: 1.5rem 0;
@@ -393,41 +393,41 @@ body:has(#register-view:not(.hidden)) .sbi-new-user-section {
 }
 
 /* Show only on register view */
-body:has(#register-view:not(.hidden)) .sbi-register-benefits-section {
+body:has(#register-view:not(.hidden)) .spx-register-benefits-section {
     display: block;
 }
 
-.sbi-benefits-list {
+.spx-benefits-list {
     list-style: none;
     padding: 0;
     margin: 0 0 1.5rem 0;
 }
 
-.sbi-benefits-list li {
+.spx-benefits-list li {
     display: flex;
     align-items: center;
     gap: 0.75rem;
     font-size: 0.95rem;
     font-weight: 600;
-    color: var(--sbi-dark-purple);
+    color: var(--spx-dark-purple);
     margin-bottom: 0.75rem;
 }
 
-.sbi-benefits-list li svg {
+.spx-benefits-list li svg {
     color: #22c55e; /* Green checkmarks */
 }
 
-.sbi-login-prompt p {
+.spx-login-prompt p {
     font-size: 0.95rem;
     font-weight: 600;
-    color: var(--sbi-accent-purple);
+    color: var(--spx-accent-purple);
     margin-bottom: 0.5rem;
 }
 
-.sbi-btn-purple-outline {
+.spx-btn-purple-outline {
     background: transparent;
-    border: 2px solid var(--sbi-accent-purple);
-    color: var(--sbi-accent-purple);
+    border: 2px solid var(--spx-accent-purple);
+    color: var(--spx-accent-purple);
     padding: 0.5rem 1.5rem;
     border-radius: 20px;
     font-size: 0.9rem;
@@ -436,31 +436,31 @@ body:has(#register-view:not(.hidden)) .sbi-register-benefits-section {
     transition: var(--transition);
 }
 
-.sbi-btn-purple-outline:hover {
-    background: var(--sbi-accent-purple);
+.spx-btn-purple-outline:hover {
+    background: var(--spx-accent-purple);
     color: white;
 }
 
-.sbi-new-user-label {
+.spx-new-user-label {
     font-size: 0.95rem;
     font-weight: 700;
-    color: var(--sbi-accent-purple);
+    color: var(--spx-accent-purple);
     margin-bottom: 0.2rem;
 }
 
-.sbi-new-user-desc {
+.spx-new-user-desc {
     font-size: 0.85rem;
-    color: var(--sbi-text-gray);
+    color: var(--spx-text-gray);
     margin-bottom: 1rem;
 }
 
-.sbi-new-user-actions {
+.spx-new-user-actions {
     display: flex;
     gap: 1rem;
 }
 
-.sbi-btn-purple-fill {
-    background-color: var(--sbi-accent-purple);
+.spx-btn-purple-fill {
+    background-color: var(--spx-accent-purple);
     color: #ffffff;
     border: none;
     padding: 0.65rem 1.75rem;
@@ -471,16 +471,16 @@ body:has(#register-view:not(.hidden)) .sbi-register-benefits-section {
     transition: var(--transition);
 }
 
-.sbi-btn-purple-fill:hover {
-    background-color: var(--sbi-dark-purple);
+.spx-btn-purple-fill:hover {
+    background-color: var(--spx-dark-purple);
     transform: translateY(-1px);
     box-shadow: 0 4px 12px rgba(60, 18, 83, 0.2);
 }
 
-.sbi-btn-purple-outline {
+.spx-btn-purple-outline {
     background-color: transparent;
-    color: var(--sbi-accent-purple);
-    border: 1px solid var(--sbi-accent-purple);
+    color: var(--spx-accent-purple);
+    border: 1px solid var(--spx-accent-purple);
     padding: 0.65rem 1.75rem;
     border-radius: 25px;
     font-size: 0.85rem;
@@ -489,99 +489,99 @@ body:has(#register-view:not(.hidden)) .sbi-register-benefits-section {
     transition: var(--transition);
 }
 
-.sbi-btn-purple-outline:hover {
-    background-color: var(--sbi-accent-purple);
+.spx-btn-purple-outline:hover {
+    background-color: var(--spx-accent-purple);
     color: #ffffff;
     transform: translateY(-1px);
 }
 
-.sbi-open-now-text {
+.spx-open-now-text {
     font-size: 0.85rem;
-    color: var(--sbi-text-gray);
+    color: var(--spx-text-gray);
 }
 
-.sbi-open-link {
-    color: var(--sbi-accent-purple);
+.spx-open-link {
+    color: var(--spx-accent-purple);
     font-weight: 700;
     text-decoration: none;
 }
 
-.sbi-open-link:hover {
+.spx-open-link:hover {
     text-decoration: underline;
 }
 
 /* Right side Card Container */
-.sbi-card-panel {
+.spx-card-panel {
     flex-basis: 40%;
     min-width: 380px;
 }
 
-.sbi-portal-card {
+.spx-portal-card {
     background-color: #ffffff;
     border: 1px solid #e1daea;
     border-radius: 8px;
     padding: 2.2rem;
-    box-shadow: var(--sbi-card-shadow);
+    box-shadow: var(--spx-card-shadow);
 }
 
-.sbi-card-title {
+.spx-card-title {
     margin-bottom: 1.5rem;
     border-bottom: 1.5rem;
     text-align: center;
 }
 
-.sbi-card-title h3 {
+.spx-card-title h3 {
     font-size: 1rem;
     font-weight: 600;
-    color: var(--sbi-accent-purple);
+    color: var(--spx-accent-purple);
     text-transform: uppercase;
     letter-spacing: 0.5px;
 }
 
 /* Form inputs styling */
-.sbi-form {
+.spx-form {
     display: flex;
     flex-direction: column;
     gap: 1.25rem;
 }
 
-.sbi-form-group {
+.spx-form-group {
     display: flex;
     flex-direction: column;
     gap: 0.35rem;
 }
 
-.sbi-form-label {
+.spx-form-label {
     font-size: 0.78rem;
     font-weight: 700;
-    color: var(--sbi-text-gray);
+    color: var(--spx-text-gray);
 }
 
-.sbi-input-container {
+.spx-input-container {
     position: relative;
     display: flex;
     align-items: center;
 }
 
-.sbi-form-input {
+.spx-form-input {
     width: 100%;
     padding: 0.65rem 0.85rem;
     background-color: #f7f6f9;
     border: 1px solid #ccd;
     border-radius: 4px;
     font-size: 0.88rem;
-    color: var(--sbi-text-dark);
+    color: var(--spx-text-dark);
     outline: none;
     transition: var(--transition);
 }
 
-.sbi-form-input:focus {
-    border-color: var(--sbi-accent-purple);
+.spx-form-input:focus {
+    border-color: var(--spx-accent-purple);
     background-color: #ffffff;
     box-shadow: 0 0 0 3px rgba(109, 28, 127, 0.1);
 }
 
-.sbi-select {
+.spx-select {
     appearance: none;
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23555555' stroke-width='2.5'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
     background-repeat: no-repeat;
@@ -590,17 +590,17 @@ body:has(#register-view:not(.hidden)) .sbi-register-benefits-section {
 }
 
 /* Password button overlay options */
-.sbi-input-addon-buttons {
+.spx-input-addon-buttons {
     position: absolute;
     right: 0.5rem;
     display: flex;
     gap: 0.3rem;
 }
 
-.sbi-input-btn {
+.spx-input-btn {
     background: none;
     border: none;
-    color: var(--sbi-text-gray);
+    color: var(--spx-text-gray);
     cursor: pointer;
     display: flex;
     align-items: center;
@@ -609,8 +609,8 @@ body:has(#register-view:not(.hidden)) .sbi-register-benefits-section {
     transition: var(--transition);
 }
 
-.sbi-input-btn:hover {
-    color: var(--sbi-accent-purple);
+.spx-input-btn:hover {
+    color: var(--spx-accent-purple);
 }
 
 .absolute-btn {
@@ -618,35 +618,35 @@ body:has(#register-view:not(.hidden)) .sbi-register-benefits-section {
     right: 0.5rem;
 }
 
-.sbi-form-assist-row {
+.spx-form-assist-row {
     display: flex;
     justify-content: flex-start;
     margin-top: 0.15rem;
 }
 
-.sbi-assist-btn {
+.spx-assist-btn {
     background: none;
     border: none;
-    color: var(--sbi-accent-purple);
+    color: var(--spx-accent-purple);
     font-size: 0.72rem;
     font-weight: 700;
     cursor: pointer;
     text-decoration: underline;
 }
 
-.sbi-assist-btn:hover {
-    color: var(--sbi-dark-purple);
+.spx-assist-btn:hover {
+    color: var(--spx-dark-purple);
 }
 
 /* Captcha area styling */
-.sbi-captcha-layout {
+.spx-captcha-layout {
     display: grid;
     grid-template-columns: 1.2fr 1fr;
     gap: 0.75rem;
     align-items: center;
 }
 
-.sbi-captcha-input {
+.spx-captcha-input {
     width: 100%;
     padding: 0.65rem 0.85rem;
     background-color: #f7f6f9;
@@ -660,12 +660,12 @@ body:has(#register-view:not(.hidden)) .sbi-register-benefits-section {
     outline: none;
 }
 
-.sbi-captcha-input:focus {
-    border-color: var(--sbi-accent-purple);
+.spx-captcha-input:focus {
+    border-color: var(--spx-accent-purple);
     background-color: #ffffff;
 }
 
-.sbi-captcha-image-block {
+.spx-captcha-image-block {
     display: flex;
     align-items: center;
     border: 1px solid #ccd;
@@ -675,12 +675,12 @@ body:has(#register-view:not(.hidden)) .sbi-register-benefits-section {
     height: 38px;
 }
 
-.sbi-captcha-image-block canvas {
+.spx-captcha-image-block canvas {
     max-width: 100%;
     height: 100%;
 }
 
-.sbi-captcha-actions {
+.spx-captcha-actions {
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -690,10 +690,10 @@ body:has(#register-view:not(.hidden)) .sbi-register-benefits-section {
     padding: 0 8px;
 }
 
-.sbi-captcha-action-btn {
+.spx-captcha-action-btn {
     background: none;
     border: none;
-    color: var(--sbi-text-gray);
+    color: var(--spx-text-gray);
     cursor: pointer;
     display: flex;
     align-items: center;
@@ -701,21 +701,21 @@ body:has(#register-view:not(.hidden)) .sbi-register-benefits-section {
     padding: 4px;
 }
 
-.sbi-captcha-action-btn svg {
+.spx-captcha-action-btn svg {
     width: 18px;
     height: 18px;
 }
 
-.sbi-captcha-action-btn:hover {
-    color: var(--sbi-accent-purple);
+.spx-captcha-action-btn:hover {
+    color: var(--spx-accent-purple);
 }
 
 /* Submit and Action Buttons */
-.sbi-submit-container {
+.spx-submit-container {
     margin-top: 0.5rem;
 }
 
-.sbi-btn-login {
+.spx-btn-login {
     width: 100%;
     background-color: #e6e6e6; /* Start as light grey, active colors override */
     color: #999999;
@@ -730,49 +730,49 @@ body:has(#register-view:not(.hidden)) .sbi-register-benefits-section {
 }
 
 /* Standard login is active once values are filled, but let's color it natively */
-#login-form .sbi-btn-login, 
-#register-form .sbi-btn-login, 
-#forgot-password-form-1 .sbi-btn-login,
-#forgot-password-form-2 .sbi-btn-login {
-    background-color: var(--sbi-accent-purple);
+#login-form .spx-btn-login, 
+#register-form .spx-btn-login, 
+#forgot-password-form-1 .spx-btn-login,
+#forgot-password-form-2 .spx-btn-login {
+    background-color: var(--spx-accent-purple);
     color: #ffffff;
 }
 
-.sbi-btn-login:hover {
-    background-color: var(--sbi-dark-purple);
+.spx-btn-login:hover {
+    background-color: var(--spx-dark-purple);
     box-shadow: 0 4px 12px rgba(60, 18, 83, 0.2);
 }
 
-.sbi-lock-unlock-row {
+.spx-lock-unlock-row {
     display: flex;
     justify-content: flex-end;
     margin-top: 0.25rem;
 }
 
-.sbi-lock-btn {
+.spx-lock-btn {
     background: none;
     border: none;
-    color: var(--sbi-text-gray);
+    color: var(--spx-text-gray);
     font-size: 0.72rem;
     font-weight: 600;
     cursor: pointer;
     text-decoration: underline;
 }
 
-.sbi-lock-btn:hover {
-    color: var(--sbi-accent-purple);
+.spx-lock-btn:hover {
+    color: var(--spx-accent-purple);
 }
 
 /* Back Row for registration cards */
-.sbi-back-nav-row {
+.spx-back-nav-row {
     margin-bottom: 0.6rem;
     display: flex;
 }
 
-.sbi-back-button {
+.spx-back-button {
     background: #ffffff;
-    border: 1px solid var(--sbi-accent-purple);
-    color: var(--sbi-accent-purple);
+    border: 1px solid var(--spx-accent-purple);
+    color: var(--spx-accent-purple);
     padding: 0.35rem 0.75rem;
     border-radius: 20px;
     font-size: 0.72rem;
@@ -784,8 +784,8 @@ body:has(#register-view:not(.hidden)) .sbi-register-benefits-section {
     transition: var(--transition);
 }
 
-.sbi-back-button:hover {
-    background-color: var(--sbi-accent-purple);
+.spx-back-button:hover {
+    background-color: var(--spx-accent-purple);
     color: #ffffff;
 }
 
@@ -806,7 +806,7 @@ body:has(#register-view:not(.hidden)) .sbi-register-benefits-section {
 
 .strength-text {
     font-size: 0.72rem;
-    color: var(--sbi-text-gray);
+    color: var(--spx-text-gray);
     margin-top: 0.15rem;
     display: block;
 }
@@ -837,7 +837,7 @@ body:has(#register-view:not(.hidden)) .sbi-register-benefits-section {
 }
 
 /* Reset password inline error — matches login error banner exactly */
-.sbi-reset-error {
+.spx-reset-error {
     color: #e53e3e;
     font-size: 0.85rem;
     font-weight: 400;
@@ -850,14 +850,14 @@ body:has(#register-view:not(.hidden)) .sbi-register-benefits-section {
 /* ==========================================================================
    4. BOTTOM WAVES AND ACTIONS
    ========================================================================== */
-.sbi-auth-bottom-banner {
+.spx-auth-bottom-banner {
     position: relative;
     width: 100%;
     background-color: transparent;
     margin-top: auto;
 }
 
-.sbi-quick-actions-bar {
+.spx-quick-actions-bar {
     position: absolute;
     bottom: 4.5rem;
     left: 8%;
@@ -873,32 +873,32 @@ body:has(#register-view:not(.hidden)) .sbi-register-benefits-section {
     z-index: 10;
 }
 
-.sbi-qa-title {
+.spx-qa-title {
     font-size: 0.75rem;
     font-weight: 700;
     letter-spacing: 0.5px;
     text-transform: uppercase;
 }
 
-.sbi-qa-bullets-container {
+.spx-qa-bullets-container {
     display: flex;
     gap: 0.25rem;
 }
 
-.sbi-bullet-dot {
+.spx-bullet-dot {
     width: 6px;
     height: 6px;
     border-radius: 50%;
     background-color: rgba(255, 255, 255, 0.4);
 }
 
-.sbi-bullet-dot.active {
+.spx-bullet-dot.active {
     background-color: #ffffff;
     width: 16px;
     border-radius: 3px;
 }
 
-.sbi-wave-wrapper {
+.spx-wave-wrapper {
     width: 100%;
     height: 180px;
     overflow: hidden;
@@ -906,7 +906,7 @@ body:has(#register-view:not(.hidden)) .sbi-register-benefits-section {
     margin-bottom: -5px;
 }
 
-.sbi-background-waves {
+.spx-background-waves {
     width: 100%;
     height: 100%;
     display: block;
@@ -986,14 +986,14 @@ body:has(#register-view:not(.hidden)) .sbi-register-benefits-section {
     opacity: 0.95;
 }
 
-.sbi-otp-target {
+.spx-otp-target {
     color: #00f2fe;
     font-size: 0.9rem;
     display: block;
     margin-top: 0.3rem;
 }
 
-.sbi-otp-fields-row {
+.spx-otp-fields-row {
     display: flex;
     align-items: center;
     gap: 0.75rem;
@@ -1005,7 +1005,7 @@ body:has(#register-view:not(.hidden)) .sbi-register-benefits-section {
     gap: 0.4rem;
 }
 
-.sbi-otp-box {
+.spx-otp-box {
     width: 38px;
     height: 42px;
     background-color: transparent;
@@ -1019,11 +1019,11 @@ body:has(#register-view:not(.hidden)) .sbi-register-benefits-section {
     font-family: var(--font-mono);
 }
 
-.sbi-otp-box:focus {
+.spx-otp-box:focus {
     border-bottom-color: #00f2fe;
 }
 
-.sbi-otp-reveal-btn {
+.spx-otp-reveal-btn {
     background: none;
     border: none;
     color: rgba(255, 255, 255, 0.7);
@@ -1031,11 +1031,11 @@ body:has(#register-view:not(.hidden)) .sbi-register-benefits-section {
     padding: 4px;
 }
 
-.sbi-otp-reveal-btn:hover {
+.spx-otp-reveal-btn:hover {
     color: #ffffff;
 }
 
-.sbi-otp-timer-row {
+.spx-otp-timer-row {
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -1043,11 +1043,11 @@ body:has(#register-view:not(.hidden)) .sbi-register-benefits-section {
     margin-bottom: 1rem;
 }
 
-.sbi-otp-timer-text {
+.spx-otp-timer-text {
     opacity: 0.8;
 }
 
-.sbi-otp-resend-btn {
+.spx-otp-resend-btn {
     background: none;
     border: none;
     color: #00f2fe;
@@ -1056,17 +1056,17 @@ body:has(#register-view:not(.hidden)) .sbi-register-benefits-section {
     text-decoration: underline;
 }
 
-.sbi-otp-resend-btn:disabled {
+.spx-otp-resend-btn:disabled {
     color: rgba(255, 255, 255, 0.4);
     cursor: not-allowed;
     text-decoration: none;
 }
 
-.sbi-otp-submit-row {
+.spx-otp-submit-row {
     margin-top: 1rem;
 }
 
-.sbi-btn-otp-proceed {
+.spx-btn-otp-proceed {
     width: 100%;
     background-color: #ffffff;
     color: #2b2c82;
@@ -1079,7 +1079,7 @@ body:has(#register-view:not(.hidden)) .sbi-register-benefits-section {
     transition: var(--transition);
 }
 
-.sbi-btn-otp-proceed:hover {
+.spx-btn-otp-proceed:hover {
     background-color: #f0f0f5;
     box-shadow: 0 4px 15px rgba(255, 255, 255, 0.15);
 }
@@ -1087,7 +1087,7 @@ body:has(#register-view:not(.hidden)) .sbi-register-benefits-section {
 /* ==========================================================================
    6. HIGH FIDELITY DASHBOARD VIEW
    ========================================================================== */
-.sbi-dashboard-container {
+.spx-dashboard-container {
     width: 100%;
     max-width: 1240px;
     margin: 0 auto;
@@ -1098,7 +1098,7 @@ body:has(#register-view:not(.hidden)) .sbi-register-benefits-section {
 }
 
 /* Greeting Bar */
-.sbi-dash-greeting-bar {
+.spx-dash-greeting-bar {
     background-color: #ffffff;
     border: 1px solid #e7e3ec;
     border-radius: 4px;
@@ -1106,18 +1106,18 @@ body:has(#register-view:not(.hidden)) .sbi-register-benefits-section {
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.02);
 }
 
-.sbi-dash-greeting-text {
+.spx-dash-greeting-text {
     font-size: 1.1rem;
     font-weight: 400;
-    color: var(--sbi-accent-purple);
+    color: var(--spx-accent-purple);
 }
 
-.sbi-dash-greeting-text strong {
+.spx-dash-greeting-text strong {
     font-weight: 700;
 }
 
 /* Carousel Section */
-.sbi-carousel-section {
+.spx-carousel-section {
     width: 100%;
     overflow-x: auto;
     background-color: #ffffff;
@@ -1127,14 +1127,14 @@ body:has(#register-view:not(.hidden)) .sbi-register-benefits-section {
     scrollbar-width: thin;
 }
 
-.sbi-carousel-wrapper {
+.spx-carousel-wrapper {
     display: flex;
     gap: 2.2rem;
     min-width: max-content;
     padding: 0.25rem 0;
 }
 
-.sbi-carousel-item {
+.spx-carousel-item {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -1144,7 +1144,7 @@ body:has(#register-view:not(.hidden)) .sbi-register-benefits-section {
     text-align: center;
 }
 
-.sbi-carousel-icon {
+.spx-carousel-icon {
     width: 52px;
     height: 52px;
     border-radius: 50%;
@@ -1156,14 +1156,14 @@ body:has(#register-view:not(.hidden)) .sbi-register-benefits-section {
     transition: var(--transition);
 }
 
-.sbi-carousel-item:hover .sbi-carousel-icon {
+.spx-carousel-item:hover .spx-carousel-icon {
     transform: scale(1.08) translateY(-2px);
 }
 
-.sbi-carousel-label {
+.spx-carousel-label {
     font-size: 0.7rem;
     font-weight: 600;
-    color: var(--sbi-text-gray);
+    color: var(--spx-text-gray);
     line-height: 1.2;
 }
 
@@ -1178,31 +1178,31 @@ body:has(#register-view:not(.hidden)) .sbi-register-benefits-section {
 .bg-indigo { background: linear-gradient(135deg, #1e3c72, #2a5298); }
 
 /* Grid Dashboard Content */
-.sbi-dash-grid {
+.spx-dash-grid {
     display: grid;
     grid-template-columns: 2.2fr 1fr;
     gap: 1.5rem;
     align-items: start;
 }
 
-.sbi-section-header-row {
+.spx-section-header-row {
     display: flex;
     justify-content: space-between;
     align-items: center;
     margin-bottom: 0.85rem;
 }
 
-.sbi-section-title {
+.spx-section-title {
     font-size: 0.95rem;
     font-weight: 700;
-    color: var(--sbi-dark-purple);
+    color: var(--spx-dark-purple);
     text-transform: uppercase;
     letter-spacing: 0.3px;
 }
 
-.sbi-view-accounts-btn {
-    background-color: var(--sbi-light-purple);
-    color: var(--sbi-accent-purple);
+.spx-view-accounts-btn {
+    background-color: var(--spx-light-purple);
+    color: var(--spx-accent-purple);
     border: 1px solid #d8cae6;
     padding: 0.35rem 0.95rem;
     border-radius: 20px;
@@ -1212,20 +1212,20 @@ body:has(#register-view:not(.hidden)) .sbi-register-benefits-section {
     transition: var(--transition);
 }
 
-.sbi-view-accounts-btn:hover {
-    background-color: var(--sbi-accent-purple);
+.spx-view-accounts-btn:hover {
+    background-color: var(--spx-accent-purple);
     color: #ffffff;
 }
 
 /* Card lists */
-.sbi-cards-container {
+.spx-cards-container {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
     gap: 1rem;
     margin-bottom: 1.5rem;
 }
 
-.sbi-overview-card {
+.spx-overview-card {
     border-radius: 6px;
     padding: 1.25rem;
     color: #ffffff;
@@ -1233,7 +1233,7 @@ body:has(#register-view:not(.hidden)) .sbi-register-benefits-section {
     flex-direction: column;
     justify-content: space-between;
     min-height: 180px;
-    box-shadow: var(--sbi-card-shadow);
+    box-shadow: var(--spx-card-shadow);
 }
 
 .bg-purple-gradient {
@@ -1242,12 +1242,12 @@ body:has(#register-view:not(.hidden)) .sbi-register-benefits-section {
 
 .bg-light-purple {
     background-color: #ffffff;
-    color: var(--sbi-text-dark);
+    color: var(--spx-text-dark);
     border: 1px solid #e3daeb;
 }
 
-.bg-light-purple .sbi-ov-card-header span {
-    color: var(--sbi-accent-purple);
+.bg-light-purple .spx-ov-card-header span {
+    color: var(--spx-accent-purple);
     font-weight: 700;
 }
 
@@ -1255,7 +1255,7 @@ body:has(#register-view:not(.hidden)) .sbi-register-benefits-section {
     background: linear-gradient(135deg, #18276b, #194680);
 }
 
-.sbi-ov-card-header {
+.spx-ov-card-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -1266,7 +1266,7 @@ body:has(#register-view:not(.hidden)) .sbi-register-benefits-section {
     margin-bottom: 0.75rem;
 }
 
-.sbi-eye-btn {
+.spx-eye-btn {
     background: none;
     border: none;
     color: #ffffff;
@@ -1275,7 +1275,7 @@ body:has(#register-view:not(.hidden)) .sbi-register-benefits-section {
     align-items: center;
 }
 
-.sbi-ov-label {
+.spx-ov-label {
     font-size: 0.7rem;
     opacity: 0.8;
     display: block;
@@ -1283,39 +1283,39 @@ body:has(#register-view:not(.hidden)) .sbi-register-benefits-section {
     text-transform: uppercase;
 }
 
-.sbi-ov-balance {
+.spx-ov-balance {
     font-size: 1.45rem;
     font-weight: 700;
     margin-bottom: 0.5rem;
     letter-spacing: -0.5px;
 }
 
-.sbi-ov-subtext {
+.spx-ov-subtext {
     font-size: 0.75rem;
     opacity: 0.9;
     font-family: var(--font-mono);
 }
 
-.sbi-ov-subtext-small {
+.spx-ov-subtext-small {
     font-size: 0.7rem;
     opacity: 0.8;
     margin-top: 0.1rem;
 }
 
-.sbi-ov-promo-text {
+.spx-ov-promo-text {
     font-size: 0.75rem;
-    color: var(--sbi-text-gray);
+    color: var(--spx-text-gray);
     line-height: 1.45;
 }
 
-.sbi-ov-card-footer {
+.spx-ov-card-footer {
     display: flex;
     gap: 0.5rem;
     margin-top: auto;
     padding-top: 1rem;
 }
 
-.sbi-card-action-btn {
+.spx-card-action-btn {
     flex-grow: 1;
     background-color: rgba(255, 255, 255, 0.2);
     color: #ffffff;
@@ -1329,47 +1329,47 @@ body:has(#register-view:not(.hidden)) .sbi-register-benefits-section {
     transition: var(--transition);
 }
 
-.sbi-card-action-btn:hover {
+.spx-card-action-btn:hover {
     background-color: rgba(255, 255, 255, 0.35);
 }
 
-.sbi-card-action-btn.fill {
+.spx-card-action-btn.fill {
     background-color: #ffffff;
-    color: var(--sbi-accent-purple);
+    color: var(--spx-accent-purple);
 }
 
-.sbi-card-action-btn.fill:hover {
+.spx-card-action-btn.fill:hover {
     background-color: #f4f2f7;
 }
 
-.sbi-card-action-btn.outline-purple {
+.spx-card-action-btn.outline-purple {
     background-color: transparent;
-    border: 1px solid var(--sbi-accent-purple);
-    color: var(--sbi-accent-purple);
+    border: 1px solid var(--spx-accent-purple);
+    color: var(--spx-accent-purple);
 }
 
-.sbi-card-action-btn.outline-purple:hover {
-    background-color: var(--sbi-accent-purple);
+.spx-card-action-btn.outline-purple:hover {
+    background-color: var(--spx-accent-purple);
     color: #ffffff;
 }
 
 /* Audit log section */
-.sbi-audit-section {
+.spx-audit-section {
     background-color: #ffffff;
     border: 1px solid #e7e3ec;
     border-radius: 8px;
     padding: 1.25rem;
 }
 
-.sbi-section-title-small {
+.spx-section-title-small {
     font-size: 0.8rem;
     font-weight: 700;
-    color: var(--sbi-text-gray);
+    color: var(--spx-text-gray);
     margin-bottom: 0.75rem;
     text-transform: uppercase;
 }
 
-.sbi-audit-item {
+.spx-audit-item {
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -1379,54 +1379,54 @@ body:has(#register-view:not(.hidden)) .sbi-register-benefits-section {
     padding: 0.75rem 1rem;
 }
 
-.sbi-audit-left {
+.spx-audit-left {
     display: flex;
     align-items: center;
     gap: 0.75rem;
 }
 
-.sbi-audit-icon {
+.spx-audit-icon {
     display: flex;
     align-items: center;
 }
 
-.sbi-audit-details {
+.spx-audit-details {
     display: flex;
     flex-direction: column;
 }
 
-.sbi-audit-details strong {
+.spx-audit-details strong {
     font-size: 0.8rem;
-    color: var(--sbi-text-dark);
+    color: var(--spx-text-dark);
 }
 
-.sbi-audit-time {
+.spx-audit-time {
     font-size: 0.68rem;
-    color: var(--sbi-text-gray);
+    color: var(--spx-text-gray);
     margin-top: 0.1rem;
 }
 
-.sbi-audit-badge {
+.spx-audit-badge {
     font-size: 0.7rem;
     font-weight: 700;
     padding: 0.2rem 0.5rem;
     border-radius: 4px;
 }
 
-.sbi-audit-badge.green {
+.spx-audit-badge.green {
     background-color: #ecfdf5;
     color: #059669;
     border: 1px solid #a7f3d0;
 }
 
 /* Sidebar lists right column */
-.sbi-dash-column-right {
+.spx-dash-column-right {
     display: flex;
     flex-direction: column;
     gap: 1.25rem;
 }
 
-.sbi-sidebar-widget {
+.spx-sidebar-widget {
     background-color: #ffffff;
     border: 1px solid #e6e0eb;
     border-radius: 8px;
@@ -1434,11 +1434,11 @@ body:has(#register-view:not(.hidden)) .sbi-register-benefits-section {
     box-shadow: 0 2px 6px rgba(0,0,0,0.01);
 }
 
-.sbi-widget-header {
+.spx-widget-header {
     background-color: #f7f4fa;
     border-bottom: 1px solid #e6e0eb;
     padding: 0.75rem 1.25rem;
-    color: var(--sbi-dark-purple);
+    color: var(--spx-dark-purple);
     font-weight: 700;
     font-size: 0.85rem;
     display: flex;
@@ -1446,41 +1446,41 @@ body:has(#register-view:not(.hidden)) .sbi-register-benefits-section {
     gap: 0.5rem;
 }
 
-.sbi-widget-links {
+.spx-widget-links {
     list-style: none;
     display: flex;
     flex-direction: column;
 }
 
-.sbi-widget-links li {
+.spx-widget-links li {
     border-bottom: 1px solid #f6f3f8;
 }
 
-.sbi-widget-links li:last-child {
+.spx-widget-links li:last-child {
     border-bottom: none;
 }
 
-.sbi-widget-links a {
+.spx-widget-links a {
     display: block;
     padding: 0.6rem 1.25rem;
     font-size: 0.78rem;
-    color: var(--sbi-text-gray);
+    color: var(--spx-text-gray);
     text-decoration: none;
     transition: var(--transition);
 }
 
-.sbi-widget-links a:hover {
+.spx-widget-links a:hover {
     background-color: #fdfcff;
-    color: var(--sbi-accent-purple);
+    color: var(--spx-accent-purple);
     padding-left: 1.45rem;
 }
 
-.sbi-widget-links li.view-all {
+.spx-widget-links li.view-all {
     background-color: #faf9fb;
 }
 
-.sbi-widget-links li.view-all a {
-    color: var(--sbi-accent-purple);
+.spx-widget-links li.view-all a {
+    color: var(--spx-accent-purple);
     font-weight: 700;
     text-align: right;
 }
@@ -1504,7 +1504,7 @@ body:has(#register-view:not(.hidden)) .sbi-register-benefits-section {
 
 .timeout-modal {
     background-color: #ffffff;
-    border-top: 4px solid var(--sbi-accent-purple); /* Purple colored accent border on top */
+    border-top: 4px solid var(--spx-accent-purple); /* Purple colored accent border on top */
     border-radius: 8px;
     width: 100%;
     max-width: 420px;
@@ -1521,7 +1521,7 @@ body:has(#register-view:not(.hidden)) .sbi-register-benefits-section {
     padding: 1rem 1.5rem;
     font-weight: 700;
     font-size: 1rem;
-    color: var(--sbi-dark-purple);
+    color: var(--spx-dark-purple);
     border-bottom: 1px solid #eaeaea;
 }
 
@@ -1541,7 +1541,7 @@ body:has(#register-view:not(.hidden)) .sbi-register-benefits-section {
 
 .timeout-message {
     font-size: 0.85rem;
-    color: var(--sbi-text-gray);
+    color: var(--spx-text-gray);
     line-height: 1.5;
 }
 
@@ -1553,7 +1553,7 @@ body:has(#register-view:not(.hidden)) .sbi-register-benefits-section {
 }
 
 .timeout-ok-btn {
-    background-color: var(--sbi-accent-purple);
+    background-color: var(--spx-accent-purple);
     color: #ffffff;
     border: none;
     padding: 0.45rem 2.2rem;
@@ -1565,14 +1565,14 @@ body:has(#register-view:not(.hidden)) .sbi-register-benefits-section {
 }
 
 .timeout-ok-btn:hover {
-    background-color: var(--sbi-dark-purple);
+    background-color: var(--spx-dark-purple);
     box-shadow: 0 4px 10px rgba(60, 18, 83, 0.15);
 }
 
 /* ==========================================================================
    8. FOOTER STYLING
    ========================================================================== */
-.sbi-portal-footer {
+.spx-portal-footer {
     background-color: #eeeeee;
     border-top: 1px solid #dddddd;
     padding: 1rem 1.5rem;
@@ -1581,31 +1581,31 @@ body:has(#register-view:not(.hidden)) .sbi-register-benefits-section {
     text-align: center;
 }
 
-.sbi-footer-container {
+.spx-footer-container {
     max-width: 1240px;
     margin: 0 auto;
 }
 
-.sbi-footer-links {
+.spx-footer-links {
     display: flex;
     justify-content: center;
     align-items: center;
     gap: 0.75rem;
 }
 
-.sbi-footer-links a {
+.spx-footer-links a {
     color: #666666;
     text-decoration: none;
     font-weight: 600;
     transition: var(--transition);
 }
 
-.sbi-footer-links a:hover {
-    color: var(--sbi-accent-purple);
+.spx-footer-links a:hover {
+    color: var(--spx-accent-purple);
     text-decoration: underline;
 }
 
-.sbi-footer-divider {
+.spx-footer-divider {
     color: #cccccc;
 }
 
@@ -1623,10 +1623,10 @@ body:has(#register-view:not(.hidden)) .sbi-register-benefits-section {
 .toast {
     background-color: #ffffff;
     border: 1px solid #e6e0eb;
-    border-left: 4.5px solid var(--sbi-accent-purple);
+    border-left: 4.5px solid var(--spx-accent-purple);
     border-radius: 4px;
     padding: 0.75rem 1rem;
-    color: var(--sbi-text-dark);
+    color: var(--spx-text-dark);
     font-size: 0.8rem;
     font-weight: 600;
     display: flex;
@@ -1646,7 +1646,7 @@ body:has(#register-view:not(.hidden)) .sbi-register-benefits-section {
    9. DYNAMIC DUAL-VIEW CSS ENGINE (:has selector)
    ========================================================================== */
 /* Controls display items dynamically depending on whether dashboard-view is visible */
-body:has(#dashboard-view:not(.hidden)) .sbi-auth-container {
+body:has(#dashboard-view:not(.hidden)) .spx-auth-container {
     display: none !important;
 }
 body:has(#dashboard-view:not(.hidden)) .logged-out-menu {
@@ -1655,7 +1655,7 @@ body:has(#dashboard-view:not(.hidden)) .logged-out-menu {
 body:has(#dashboard-view:not(.hidden)) .logged-in-menu {
     display: flex !important;
 }
-body:has(#dashboard-view:not(.hidden)) .sbi-header-actions {
+body:has(#dashboard-view:not(.hidden)) .spx-header-actions {
     display: flex !important;
 }
 
@@ -1669,35 +1669,35 @@ body:has(#forgot-password-view:not(.hidden)) #dashboard-view {
    10. RESPONSIVE MEDIA QUERIES
    ========================================================================== */
 @media (max-width: 900px) {
-    .sbi-auth-split {
+    .spx-auth-split {
         flex-direction: column;
         gap: 2rem;
         padding-top: 1.5rem;
         text-align: center;
     }
     
-    .sbi-welcome-panel {
+    .spx-welcome-panel {
         flex-basis: 100%;
     }
     
-    .sbi-new-user-actions {
+    .spx-new-user-actions {
         justify-content: center;
     }
     
-    .sbi-card-panel {
+    .spx-card-panel {
         flex-basis: 100%;
         width: 100%;
     }
     
-    .sbi-dash-grid {
+    .spx-dash-grid {
         grid-template-columns: 1fr;
     }
     
-    .sbi-main-nav {
+    .spx-main-nav {
         display: none; /* Hide top menus on mobile */
     }
     
-    .sbi-hello-title {
+    .spx-hello-title {
         font-size: 3.5rem;
     }
 }
@@ -1705,7 +1705,7 @@ body:has(#forgot-password-view:not(.hidden)) #dashboard-view {
 /* ==========================================================================
    GLOBAL BACK BUTTON STYLING
    ========================================================================== */
-.sbi-global-back-container {
+.spx-global-back-container {
     max-width: 1140px;
     width: 100%;
     margin: 1.5rem auto 0 auto;
@@ -1717,10 +1717,10 @@ body:has(#forgot-password-view:not(.hidden)) #dashboard-view {
     z-index: 10;
 }
 
-.sbi-global-back-btn {
+.spx-global-back-btn {
     background: #ffffff;
-    border: 1px solid var(--sbi-accent-purple);
-    color: var(--sbi-accent-purple);
+    border: 1px solid var(--spx-accent-purple);
+    color: var(--spx-accent-purple);
     padding: 0.45rem 1rem;
     border-radius: 20px;
     font-size: 0.8rem;
@@ -1733,33 +1733,33 @@ body:has(#forgot-password-view:not(.hidden)) #dashboard-view {
     transition: var(--transition);
 }
 
-.sbi-global-back-btn:hover {
-    background: var(--sbi-accent-purple);
+.spx-global-back-btn:hover {
+    background: var(--spx-accent-purple);
     color: #ffffff;
     transform: translateY(-1px);
     box-shadow: 0 4px 12px rgba(109, 28, 127, 0.2);
 }
 
 /* Show back button only when register or forgot password view is active */
-body:has(#register-view:not(.hidden)) .sbi-global-back-container,
-body:has(#forgot-password-view:not(.hidden)) .sbi-global-back-container {
+body:has(#register-view:not(.hidden)) .spx-global-back-container,
+body:has(#forgot-password-view:not(.hidden)) .spx-global-back-container {
     display: block;
 }
 
 /* Horizontal alignment for registration name fields */
-.sbi-form-row {
+.spx-form-row {
     display: flex;
     gap: 1rem;
     width: 100%;
 }
 
-.sbi-form-row .sbi-form-group {
+.spx-form-row .spx-form-group {
     flex: 1;
 }
 
 /* Ensure stacks properly on mobile screens */
 @media (max-width: 480px) {
-    .sbi-form-row {
+    .spx-form-row {
         flex-direction: column;
         gap: 1.25rem;
     }

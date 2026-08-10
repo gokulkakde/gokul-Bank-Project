@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -21,112 +21,112 @@
     <div class="portal-wrapper">
         
         <!-- SPX BANK TOP NAVIGATION STRIP -->
-        <div class="sbi-top-nav">
-            <div class="sbi-top-nav-container">
-                <div class="sbi-top-nav-left">
-                    <span class="sbi-top-tab">Personal Banking</span>
-                    <a href="#" class="sbi-top-link">Skip to main content</a>
-                    <a href="#" class="sbi-top-link">Corporate website</a>
+        <div class="spx-top-nav">
+            <div class="spx-top-nav-container">
+                <div class="spx-top-nav-left">
+                    <span class="spx-top-tab">Personal Banking</span>
+                    <a href="#" class="spx-top-link">Skip to main content</a>
+                    <a href="#" class="spx-top-link">Corporate website</a>
                 </div>
-                <div class="sbi-top-nav-right">
-                    <a href="#" class="sbi-top-link sbi-icon-link" onclick="triggerQuickAction('Get Help')">
+                <div class="spx-top-nav-right">
+                    <a href="#" class="spx-top-link spx-icon-link" onclick="triggerQuickAction('Get Help')">
                         <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
                         Get Help
                     </a>
-                    <a href="#" class="sbi-top-link sbi-icon-link" onclick="triggerQuickAction('WhatsApp Banking')">
+                    <a href="#" class="spx-top-link spx-icon-link" onclick="triggerQuickAction('WhatsApp Banking')">
                         <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path></svg>
                         WhatsApp
                     </a>
-                    <div class="sbi-top-link sbi-lang-selector">
+                    <div class="spx-top-link spx-lang-selector">
                         English
                         <svg viewBox="0 0 24 24" width="10" height="10" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
                     </div>
-                    <span class="sbi-top-divider">|</span>
-                    <button class="sbi-font-btn">A-</button>
-                    <button class="sbi-font-btn">A</button>
-                    <button class="sbi-font-btn">A+</button>
+                    <span class="spx-top-divider">|</span>
+                    <button class="spx-font-btn">A-</button>
+                    <button class="spx-font-btn">A</button>
+                    <button class="spx-font-btn">A+</button>
                 </div>
             </div>
         </div>
 
         <!-- MAIN BRANDING HEADER -->
-        <header class="sbi-main-header">
-            <div class="sbi-header-container">
-                <div class="sbi-logo-block" onclick="switchView('login')">
+        <header class="spx-main-header">
+            <div class="spx-header-container">
+                <div class="spx-logo-block" onclick="switchView('login')">
                     <span class="spx-text">SPX BANK</span>
                     <span class="net-banking-tag">NET-BANKING</span>
                 </div>
                 
                 <!-- NAVIGATION MENU -->
-                <nav class="sbi-main-nav">
+                <nav class="spx-main-nav">
                     <!-- Dynamic switching of menu items based on login status -->
-                    <div class="sbi-nav-menu logged-out-menu">
-                        <a href="#" class="sbi-nav-item active" onclick="switchView('login')">Home</a>
-                        <a href="#" class="sbi-nav-item" onclick="triggerQuickAction('Accounts & Deposits Info')">Accounts & Deposits</a>
-                        <a href="#" class="sbi-nav-item" onclick="triggerQuickAction('Loans Info')">Loans</a>
-                        <a href="#" class="sbi-nav-item" onclick="triggerQuickAction('Cards Info')">Cards</a>
-                        <a href="#" class="sbi-nav-item" onclick="triggerQuickAction('Investments Info')">Investments</a>
+                    <div class="spx-nav-menu logged-out-menu">
+                        <a href="#" class="spx-nav-item active" onclick="switchView('login')">Home</a>
+                        <a href="#" class="spx-nav-item" onclick="triggerQuickAction('Accounts & Deposits Info')">Accounts & Deposits</a>
+                        <a href="#" class="spx-nav-item" onclick="triggerQuickAction('Loans Info')">Loans</a>
+                        <a href="#" class="spx-nav-item" onclick="triggerQuickAction('Cards Info')">Cards</a>
+                        <a href="#" class="spx-nav-item" onclick="triggerQuickAction('Investments Info')">Investments</a>
                     </div>
-                    <div class="sbi-nav-menu logged-in-menu hidden">
-                        <a href="#" class="sbi-nav-item active" onclick="switchView('dashboard')">Overview</a>
-                        <a href="#" class="sbi-nav-item" onclick="triggerQuickAction('Accounts dashboard')">Accounts</a>
-                        <a href="#" class="sbi-nav-item" onclick="triggerQuickAction('Payments & Transfers')">Payments</a>
-                        <a href="#" class="sbi-nav-item" onclick="triggerQuickAction('Deposits services')">Deposits</a>
-                        <a href="#" class="sbi-nav-item" onclick="triggerQuickAction('Loans portal')">Loans</a>
-                        <a href="#" class="sbi-nav-item" onclick="triggerQuickAction('Cards management')">Cards</a>
-                        <a href="#" class="sbi-nav-item" onclick="triggerQuickAction('Investments options')">Investments</a>
-                        <a href="#" class="sbi-nav-item" onclick="triggerQuickAction('Insurance details')">Insurance</a>
-                        <a href="#" class="sbi-nav-item" onclick="triggerQuickAction('Other Services')">Services</a>
+                    <div class="spx-nav-menu logged-in-menu hidden">
+                        <a href="#" class="spx-nav-item active" onclick="switchView('dashboard')">Overview</a>
+                        <a href="#" class="spx-nav-item" onclick="triggerQuickAction('Accounts dashboard')">Accounts</a>
+                        <a href="#" class="spx-nav-item" onclick="triggerQuickAction('Payments & Transfers')">Payments</a>
+                        <a href="#" class="spx-nav-item" onclick="triggerQuickAction('Deposits services')">Deposits</a>
+                        <a href="#" class="spx-nav-item" onclick="triggerQuickAction('Loans portal')">Loans</a>
+                        <a href="#" class="spx-nav-item" onclick="triggerQuickAction('Cards management')">Cards</a>
+                        <a href="#" class="spx-nav-item" onclick="triggerQuickAction('Investments options')">Investments</a>
+                        <a href="#" class="spx-nav-item" onclick="triggerQuickAction('Insurance details')">Insurance</a>
+                        <a href="#" class="spx-nav-item" onclick="triggerQuickAction('Other Services')">Services</a>
                     </div>
                 </nav>
 
-                <div class="sbi-header-actions logged-in-only hidden">
-                    <button class="sbi-header-icon-btn" onclick="triggerQuickAction('Search Portal')">
+                <div class="spx-header-actions logged-in-only hidden">
+                    <button class="spx-header-icon-btn" onclick="triggerQuickAction('Search Portal')">
                         <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
                     </button>
-                    <button class="sbi-header-icon-btn" onclick="triggerQuickAction('Notifications')">
+                    <button class="spx-header-icon-btn" onclick="triggerQuickAction('Notifications')">
                         <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
                     </button>
-                    <div class="sbi-user-badge">
-                        <span class="sbi-avatar-initials" id="dash-avatar">JD</span>
-                        <span class="sbi-user-profile-label">My Profile</span>
+                    <div class="spx-user-badge">
+                        <span class="spx-avatar-initials" id="dash-avatar">JD</span>
+                        <span class="spx-user-profile-label">My Profile</span>
                     </div>
-                    <button class="sbi-logout-btn" onclick="handleLogout()">Logout</button>
+                    <button class="spx-logout-btn" onclick="handleLogout()">Logout</button>
                 </div>
             </div>
         </header>
 
         <!-- PORTAL MAIN CONTENT -->
-        <main class="sbi-portal-body">
+        <main class="spx-portal-body">
             
             <!-- GLOBAL GO BACK BUTTON -->
-            <div class="sbi-global-back-container">
-                <button type="button" class="sbi-global-back-btn" onclick="goBack()">
+            <div class="spx-global-back-container">
+                <button type="button" class="spx-global-back-btn" onclick="goBack()">
                     <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
                     Go Back
                 </button>
             </div>
             
             <!-- AUTH LAYOUT CONTAINER (SPLIT PANELS) -->
-            <div id="auth-flow-container" class="sbi-auth-container">
-                <div class="sbi-auth-split">
+            <div id="auth-flow-container" class="spx-auth-container">
+                <div class="spx-auth-split">
                     
                     <!-- Left Welcome Panel -->
-                    <div class="sbi-welcome-panel">
-                        <h2 class="sbi-hello-title">Hello!</h2>
-                        <h3 class="sbi-welcome-subtitle">Welcome to the world of SPX BANK</h3>
+                    <div class="spx-welcome-panel">
+                        <h2 class="spx-hello-title">Hello!</h2>
+                        <h3 class="spx-welcome-subtitle">Welcome to the world of SPX BANK</h3>
                         
-                        <div class="sbi-new-user-section">
-                            <p class="sbi-new-user-label">Are you a new user?</p>
-                            <p class="sbi-new-user-desc">Choose the option below to get started</p>
-                            <div class="sbi-new-user-actions">
-                                <button class="sbi-btn-purple-fill" onclick="switchView('register')">Register Now</button>
+                        <div class="spx-new-user-section">
+                            <p class="spx-new-user-label">Are you a new user?</p>
+                            <p class="spx-new-user-desc">Choose the option below to get started</p>
+                            <div class="spx-new-user-actions">
+                                <button class="spx-btn-purple-fill" onclick="switchView('register')">Register Now</button>
                             </div>
                         </div>
 
                         <!-- Registration Benefits (Shown only on Register View) -->
-                        <div class="sbi-register-benefits-section">
-                            <ul class="sbi-benefits-list">
+                        <div class="spx-register-benefits-section">
+                            <ul class="spx-benefits-list">
                                 <li>
                                     <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
                                     Fast & Secure Account Setup
@@ -140,39 +140,39 @@
                                     Advanced Fraud Protection
                                 </li>
                             </ul>
-                            <div class="sbi-login-prompt">
+                            <div class="spx-login-prompt">
                                 <p>Already have an account?</p>
-                                <button class="sbi-btn-purple-outline" onclick="switchView('login')">Login Here</button>
+                                <button class="spx-btn-purple-outline" onclick="switchView('login')">Login Here</button>
                             </div>
                         </div>
 
                     </div>
 
                     <!-- Right Card Panel (Authentication forms) -->
-                    <div class="sbi-card-panel">
+                    <div class="spx-card-panel">
                         
                         <!-- VIEW 1: LOGIN CARD -->
-                        <section id="login-view" class="sbi-portal-card view-active">
-                            <div class="sbi-card-title">
+                        <section id="login-view" class="spx-portal-card view-active">
+                            <div class="spx-card-title">
                                 <h3>Username / Password</h3>
                             </div>
 
-                            <form id="login-form" onsubmit="handleLoginSubmit(event)" class="sbi-form">
+                            <form id="login-form" onsubmit="handleLoginSubmit(event)" class="spx-form">
                                 <!-- Username (Email mapped for logic compatibility) -->
-                                <div class="sbi-form-group">
-                                    <label for="login-email" class="sbi-form-label">Username</label>
-                                    <div class="sbi-input-container">
-                                        <input type="text" id="login-username" class="sbi-form-input" placeholder="Enter Username" required autocomplete="off">
+                                <div class="spx-form-group">
+                                    <label for="login-email" class="spx-form-label">Username</label>
+                                    <div class="spx-input-container">
+                                        <input type="text" id="login-username" class="spx-form-input" placeholder="Enter Username" required autocomplete="off">
                                     </div>
                                 </div>
 
                                 <!-- Password Field -->
-                                <div class="sbi-form-group">
-                                    <label for="login-password" class="sbi-form-label">Password</label>
-                                    <div class="sbi-input-container">
-                                        <input type="password" id="login-password" class="sbi-form-input sbi-password-input" placeholder="Enter Password" required autocomplete="off">
-                                        <div class="sbi-input-addon-buttons">
-                                            <button type="button" class="sbi-input-btn" onclick="togglePasswordVisibility('login-password', this)" title="Show/Hide Password">
+                                <div class="spx-form-group">
+                                    <label for="login-password" class="spx-form-label">Password</label>
+                                    <div class="spx-input-container">
+                                        <input type="password" id="login-password" class="spx-form-input spx-password-input" placeholder="Enter Password" required autocomplete="off">
+                                        <div class="spx-input-addon-buttons">
+                                            <button type="button" class="spx-input-btn" onclick="togglePasswordVisibility('login-password', this)" title="Show/Hide Password">
                                                 <svg class="eye-open" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
                                                 <svg class="eye-closed hidden" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path><line x1="1" y1="1" x2="23" y2="23"></line></svg>
                                             </button>
@@ -180,20 +180,20 @@
                                         </div>
                                     </div>
                                     <div id="login-error-msg" style="color: #ff4d4d; font-size: 0.85rem; margin-top: 0.5rem; display: none;"></div>
-                                    <div class="sbi-form-assist-row">
-                                        <button type="button" class="sbi-assist-btn" onclick="switchView('forgot-password')">Forgot Password?</button>
+                                    <div class="spx-form-assist-row">
+                                        <button type="button" class="spx-assist-btn" onclick="switchView('forgot-password')">Forgot Password?</button>
                                     </div>
                                 </div>
 
                                 <!-- CAPTCHA -->
-                                <div class="sbi-form-group">
-                                    <label for="login-captcha-input" class="sbi-form-label">Enter Captcha</label>
-                                    <div class="sbi-captcha-layout">
-                                        <input type="text" id="login-captcha-input" class="sbi-captcha-input" placeholder="Enter Captcha" required autocomplete="off" maxlength="6">
-                                        <div class="sbi-captcha-image-block">
+                                <div class="spx-form-group">
+                                    <label for="login-captcha-input" class="spx-form-label">Enter Captcha</label>
+                                    <div class="spx-captcha-layout">
+                                        <input type="text" id="login-captcha-input" class="spx-captcha-input" placeholder="Enter Captcha" required autocomplete="off" maxlength="6">
+                                        <div class="spx-captcha-image-block">
                                             <canvas id="login-captcha-canvas" width="110" height="38"></canvas>
-                                            <div class="sbi-captcha-actions">
-                                                <button type="button" class="sbi-captcha-action-btn" onclick="generateCaptcha('login')" title="Refresh Captcha">
+                                            <div class="spx-captcha-actions">
+                                                <button type="button" class="spx-captcha-action-btn" onclick="generateCaptcha('login')" title="Refresh Captcha">
                                                     <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"></polyline><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path></svg>
                                                 </button>
                                             </div>
@@ -201,8 +201,8 @@
                                     </div>
                                 </div>
 
-                                <div class="sbi-submit-container">
-                                    <button type="submit" class="sbi-btn-login" id="btn-login">
+                                <div class="spx-submit-container">
+                                    <button type="submit" class="spx-btn-login" id="btn-login">
                                         <span class="btn-text">Login</span>
                                         <span class="btn-spinner hidden"></span>
                                     </button>
@@ -215,38 +215,38 @@
                         <!-- VIEW 2: REGISTER CARD -->
                         <div id="register-view" class="view-wrapper hidden">
 
-                            <section class="sbi-portal-card">
-                                <div class="sbi-card-title">
+                            <section class="spx-portal-card">
+                                <div class="spx-card-title">
                                     <h3>New Registration</h3>
                                 </div>
 
-                                <form id="register-form" onsubmit="handleRegisterSubmit(event)" class="sbi-form">
-                                    <div class="sbi-form-row">
-                                        <div class="sbi-form-group">
-                                            <label for="reg-firstname" class="sbi-form-label">First Name</label>
-                                            <input type="text" id="reg-firstname" class="sbi-form-input" placeholder="First Name" required autocomplete="off">
+                                <form id="register-form" onsubmit="handleRegisterSubmit(event)" class="spx-form">
+                                    <div class="spx-form-row">
+                                        <div class="spx-form-group">
+                                            <label for="reg-firstname" class="spx-form-label">First Name</label>
+                                            <input type="text" id="reg-firstname" class="spx-form-input" placeholder="First Name" required autocomplete="off">
                                         </div>
-                                        <div class="sbi-form-group">
-                                            <label for="reg-lastname" class="sbi-form-label">Last Name</label>
-                                            <input type="text" id="reg-lastname" class="sbi-form-input" placeholder="Last Name" required autocomplete="off">
+                                        <div class="spx-form-group">
+                                            <label for="reg-lastname" class="spx-form-label">Last Name</label>
+                                            <input type="text" id="reg-lastname" class="spx-form-input" placeholder="Last Name" required autocomplete="off">
                                         </div>
                                     </div>
 
-                                    <div class="sbi-form-group">
-                                        <label for="reg-email" class="sbi-form-label">Email Address</label>
-                                        <input type="email" id="reg-email" class="sbi-form-input" placeholder="" required autocomplete="off">
+                                    <div class="spx-form-group">
+                                        <label for="reg-email" class="spx-form-label">Email Address</label>
+                                        <input type="email" id="reg-email" class="spx-form-input" placeholder="" required autocomplete="off">
                                     </div>
 
-                                    <div class="sbi-form-group">
-                                        <label for="reg-username" class="sbi-form-label">Username</label>
-                                        <input type="text" id="reg-username" class="sbi-form-input" placeholder="Username" required autocomplete="off">
+                                    <div class="spx-form-group">
+                                        <label for="reg-username" class="spx-form-label">Username</label>
+                                        <input type="text" id="reg-username" class="spx-form-input" placeholder="Username" required autocomplete="off">
                                     </div>
 
-                                    <div class="sbi-form-group">
-                                        <label for="reg-password" class="sbi-form-label">Security Password</label>
-                                        <div class="sbi-input-container">
-                                            <input type="password" id="reg-password" class="sbi-form-input sbi-password-input" placeholder="" required autocomplete="off" oninput="checkPasswordStrength(this.value)">
-                                            <button type="button" class="sbi-input-btn absolute-btn" onclick="togglePasswordVisibility('reg-password', this)">
+                                    <div class="spx-form-group">
+                                        <label for="reg-password" class="spx-form-label">Security Password</label>
+                                        <div class="spx-input-container">
+                                            <input type="password" id="reg-password" class="spx-form-input spx-password-input" placeholder="" required autocomplete="off" oninput="checkPasswordStrength(this.value)">
+                                            <button type="button" class="spx-input-btn absolute-btn" onclick="togglePasswordVisibility('reg-password', this)">
                                                 <svg class="eye-open" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
                                                 <svg class="eye-closed hidden" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path><line x1="1" y1="1" x2="23" y2="23"></line></svg>
                                             </button>
@@ -258,14 +258,14 @@
                                     </div>
 
                                     <!-- CAPTCHA -->
-                                    <div class="sbi-form-group">
-                                        <label for="reg-captcha-input" class="sbi-form-label">Enter Captcha</label>
-                                        <div class="sbi-captcha-layout">
-                                            <input type="text" id="reg-captcha-input" class="sbi-captcha-input" placeholder="Enter Captcha" required autocomplete="off" maxlength="6">
-                                            <div class="sbi-captcha-image-block">
+                                    <div class="spx-form-group">
+                                        <label for="reg-captcha-input" class="spx-form-label">Enter Captcha</label>
+                                        <div class="spx-captcha-layout">
+                                            <input type="text" id="reg-captcha-input" class="spx-captcha-input" placeholder="Enter Captcha" required autocomplete="off" maxlength="6">
+                                            <div class="spx-captcha-image-block">
                                                 <canvas id="reg-captcha-canvas" width="110" height="38"></canvas>
-                                                <div class="sbi-captcha-actions">
-                                                    <button type="button" class="sbi-captcha-action-btn" onclick="generateCaptcha('reg')" title="Refresh Captcha">
+                                                <div class="spx-captcha-actions">
+                                                    <button type="button" class="spx-captcha-action-btn" onclick="generateCaptcha('reg')" title="Refresh Captcha">
                                                         <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"></polyline><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path></svg>
                                                     </button>
                                                 </div>
@@ -274,8 +274,8 @@
                                     </div>
                                     <div id="reg-error-msg" style="color: #ff4d4d; font-size: 0.85rem; margin-bottom: 1rem; display: none;"></div>
 
-                                    <div class="sbi-submit-container">
-                                        <button type="submit" class="sbi-btn-login" id="btn-register">
+                                    <div class="spx-submit-container">
+                                        <button type="submit" class="spx-btn-login" id="btn-register">
                                             <span class="btn-text">Verify & Register</span>
                                             <span class="btn-spinner hidden"></span>
                                         </button>
@@ -288,27 +288,27 @@
                         <!-- VIEW 3: FORGOT PASSWORD CARD -->
                         <div id="forgot-password-view" class="view-wrapper hidden">
 
-                            <section class="sbi-portal-card">
-                                <div class="sbi-card-title">
+                            <section class="spx-portal-card">
+                                <div class="spx-card-title">
                                     <h3>Password Recovery</h3>
                                 </div>
 
                                 <!-- STEP 1 -->
-                                <form id="forgot-password-form-1" onsubmit="handleForgotPasswordRequest(event)" class="sbi-form">
-                                    <div class="sbi-form-group">
-                                        <label for="reset-email" class="sbi-form-label">Email Address</label>
-                                        <input type="email" id="reset-email" class="sbi-form-input" placeholder="" required>
+                                <form id="forgot-password-form-1" onsubmit="handleForgotPasswordRequest(event)" class="spx-form">
+                                    <div class="spx-form-group">
+                                        <label for="reset-email" class="spx-form-label">Email Address</label>
+                                        <input type="email" id="reset-email" class="spx-form-input" placeholder="" required>
                                     </div>
 
                                     <!-- CAPTCHA -->
-                                    <div class="sbi-form-group">
-                                        <label for="reset-captcha-input" class="sbi-form-label">Enter Captcha</label>
-                                        <div class="sbi-captcha-layout">
-                                            <input type="text" id="reset-captcha-input" class="sbi-captcha-input" placeholder="Enter Captcha" required autocomplete="off" maxlength="6">
-                                            <div class="sbi-captcha-image-block">
+                                    <div class="spx-form-group">
+                                        <label for="reset-captcha-input" class="spx-form-label">Enter Captcha</label>
+                                        <div class="spx-captcha-layout">
+                                            <input type="text" id="reset-captcha-input" class="spx-captcha-input" placeholder="Enter Captcha" required autocomplete="off" maxlength="6">
+                                            <div class="spx-captcha-image-block">
                                                 <canvas id="reset-captcha-canvas" width="110" height="38"></canvas>
-                                                <div class="sbi-captcha-actions">
-                                                    <button type="button" class="sbi-captcha-action-btn" onclick="generateCaptcha('reset')" title="Refresh Captcha">
+                                                <div class="spx-captcha-actions">
+                                                    <button type="button" class="spx-captcha-action-btn" onclick="generateCaptcha('reset')" title="Refresh Captcha">
                                                         <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"></polyline><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path></svg>
                                                     </button>
                                                 </div>
@@ -316,8 +316,8 @@
                                         </div>
                                     </div>
 
-                                    <div class="sbi-submit-container">
-                                        <button type="submit" class="sbi-btn-login" id="btn-forgot-1">
+                                    <div class="spx-submit-container">
+                                        <button type="submit" class="spx-btn-login" id="btn-forgot-1">
                                             <span class="btn-text">Send Recovery OTP</span>
                                             <span class="btn-spinner hidden"></span>
                                         </button>
@@ -325,28 +325,28 @@
                                 </form>
 
                                 <!-- STEP 2 -->
-                                <form id="forgot-password-form-2" class="sbi-form hidden" onsubmit="handleNewPasswordSubmit(event)">
+                                <form id="forgot-password-form-2" class="spx-form hidden" onsubmit="handleNewPasswordSubmit(event)">
                                     <div class="step-indicator success-step">
                                         <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
                                         <span>OTP Verified for <strong id="reset-verified-email"></strong></span>
                                     </div>
 
-                                    <div class="sbi-form-group">
-                                        <label for="new-password" class="sbi-form-label">Create New Password</label>
-                                        <div class="sbi-input-container">
-                                            <input type="password" id="new-password" class="sbi-form-input sbi-password-input" placeholder="Enter new password" required autocomplete="off">
-                                            <button type="button" class="sbi-input-btn absolute-btn" onclick="togglePasswordVisibility('new-password', this)">
+                                    <div class="spx-form-group">
+                                        <label for="new-password" class="spx-form-label">Create New Password</label>
+                                        <div class="spx-input-container">
+                                            <input type="password" id="new-password" class="spx-form-input spx-password-input" placeholder="Enter new password" required autocomplete="off">
+                                            <button type="button" class="spx-input-btn absolute-btn" onclick="togglePasswordVisibility('new-password', this)">
                                                 <svg class="eye-open" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
                                                 <svg class="eye-closed hidden" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path><line x1="1" y1="1" x2="23" y2="23"></line></svg>
                                             </button>
                                         </div>
                                     </div>
 
-                                    <div class="sbi-form-group">
-                                        <label for="confirm-new-password" class="sbi-form-label">Confirm New Password</label>
-                                        <div class="sbi-input-container">
-                                            <input type="password" id="confirm-new-password" class="sbi-form-input sbi-password-input" placeholder="Confirm new password" required autocomplete="off">
-                                            <button type="button" class="sbi-input-btn absolute-btn" onclick="togglePasswordVisibility('confirm-new-password', this)">
+                                    <div class="spx-form-group">
+                                        <label for="confirm-new-password" class="spx-form-label">Confirm New Password</label>
+                                        <div class="spx-input-container">
+                                            <input type="password" id="confirm-new-password" class="spx-form-input spx-password-input" placeholder="Confirm new password" required autocomplete="off">
+                                            <button type="button" class="spx-input-btn absolute-btn" onclick="togglePasswordVisibility('confirm-new-password', this)">
                                                 <svg class="eye-open" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
                                                 <svg class="eye-closed hidden" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path><line x1="1" y1="1" x2="23" y2="23"></line></svg>
                                             </button>
@@ -354,10 +354,10 @@
                                     </div>
 
                                     <!-- Inline error: shown when new password matches old password -->
-                                    <div id="reset-pw-error-msg" class="sbi-reset-error"></div>
+                                    <div id="reset-pw-error-msg" class="spx-reset-error"></div>
 
-                                    <div class="sbi-submit-container">
-                                        <button type="submit" class="sbi-btn-login" id="btn-forgot-2">
+                                    <div class="spx-submit-container">
+                                        <button type="submit" class="spx-btn-login" id="btn-forgot-2">
                                             <span class="btn-text">Update & Sign In</span>
                                             <span class="btn-spinner hidden"></span>
                                         </button>
@@ -369,11 +369,11 @@
                     </div>
                 </div>
 
-                <!-- SBI SIGNATURE WAVES AND QUICK ACTIONS BAR -->
-                <div class="sbi-auth-bottom-banner">
-                    <div class="sbi-wave-wrapper">
+                <!-- SPX SIGNATURE WAVES AND QUICK ACTIONS BAR -->
+                <div class="spx-auth-bottom-banner">
+                    <div class="spx-wave-wrapper">
                         <!-- Curved Waves mirroring screenshot background -->
-                        <svg class="sbi-background-waves" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 220" preserveAspectRatio="none">
+                        <svg class="spx-background-waves" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 220" preserveAspectRatio="none">
                             <path fill="#6d1c7f" fill-opacity="0.25" d="M0,80 C180,120 360,130 540,110 C720,90 900,40 1080,50 C1260,60 1380,130 1440,160 L1440,220 L0,220 Z"></path>
                             <path fill="#501b80" fill-opacity="0.85" d="M0,120 C160,160 320,170 480,150 C640,130 800,80 960,90 C1120,100 1280,170 1440,190 L1440,220 L0,220 Z"></path>
                             <path fill="#3c1253" d="M0,150 C120,180 240,195 360,190 C480,185 600,160 720,150 C840,140 960,150 1080,160 C1200,170 1320,190 1440,205 L1440,220 L0,220 Z"></path>
@@ -384,159 +384,159 @@
 
 
             <!-- DASHBOARD CONTAINER (SPX BANK HIGH FIDELITY LAYOUT) -->
-            <div id="dashboard-view" class="sbi-dashboard-container hidden">
+            <div id="dashboard-view" class="spx-dashboard-container hidden">
                 
                 <!-- GREETING ROW -->
-                <div class="sbi-dash-greeting-bar">
-                    <span class="sbi-dash-greeting-text">Hi <strong id="dash-user-name">John Doe</strong>, Hope you're doing well!</span>
+                <div class="spx-dash-greeting-bar">
+                    <span class="spx-dash-greeting-text">Hi <strong id="dash-user-name">John Doe</strong>, Hope you're doing well!</span>
                 </div>
 
                 <!-- HORIZONTAL CIRCULAR LINKS CAROUSEL -->
-                <div class="sbi-carousel-section">
-                    <div class="sbi-carousel-wrapper">
-                        <div class="sbi-carousel-item" onclick="triggerQuickAction('IPO Application')">
-                            <div class="sbi-carousel-icon bg-cyan">
+                <div class="spx-carousel-section">
+                    <div class="spx-carousel-wrapper">
+                        <div class="spx-carousel-item" onclick="triggerQuickAction('IPO Application')">
+                            <div class="spx-carousel-icon bg-cyan">
                                 <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
                             </div>
-                            <span class="sbi-carousel-label">IPO</span>
+                            <span class="spx-carousel-label">IPO</span>
                         </div>
-                        <div class="sbi-carousel-item" onclick="triggerQuickAction('Fraud Awareness')">
-                            <div class="sbi-carousel-icon bg-rose">
+                        <div class="spx-carousel-item" onclick="triggerQuickAction('Fraud Awareness')">
+                            <div class="spx-carousel-icon bg-rose">
                                 <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
                             </div>
-                            <span class="sbi-carousel-label">Fraud Awareness</span>
+                            <span class="spx-carousel-label">Fraud Awareness</span>
                         </div>
-                        <div class="sbi-carousel-item" onclick="triggerQuickAction('Discover Services')">
-                            <div class="sbi-carousel-icon bg-blue">
+                        <div class="spx-carousel-item" onclick="triggerQuickAction('Discover Services')">
+                            <div class="spx-carousel-icon bg-blue">
                                 <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"></polygon></svg>
                             </div>
-                            <span class="sbi-carousel-label">Discover</span>
+                            <span class="spx-carousel-label">Discover</span>
                         </div>
-                        <div class="sbi-carousel-item" onclick="triggerQuickAction('Savings Account Details')">
-                            <div class="sbi-carousel-icon bg-emerald">
+                        <div class="spx-carousel-item" onclick="triggerQuickAction('Savings Account Details')">
+                            <div class="spx-carousel-icon bg-emerald">
                                 <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
                             </div>
-                            <span class="sbi-carousel-label">Savings Ac</span>
+                            <span class="spx-carousel-label">Savings Ac</span>
                         </div>
-                        <div class="sbi-carousel-item" onclick="triggerQuickAction('Education Loan')">
-                            <div class="sbi-carousel-icon bg-orange">
+                        <div class="spx-carousel-item" onclick="triggerQuickAction('Education Loan')">
+                            <div class="spx-carousel-icon bg-orange">
                                 <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 10v6M2 10l10-5 10 5-10 5z"></path><path d="M6 12v5c0 2 2 3 6 3s6-1 6-3v-5"></path></svg>
                             </div>
-                            <span class="sbi-carousel-label">Education Loan</span>
+                            <span class="spx-carousel-label">Education Loan</span>
                         </div>
-                        <div class="sbi-carousel-item" onclick="triggerQuickAction('Welcome to SPX BANK Tutorial')">
-                            <div class="sbi-carousel-icon bg-purple">
+                        <div class="spx-carousel-item" onclick="triggerQuickAction('Welcome to SPX BANK Tutorial')">
+                            <div class="spx-carousel-icon bg-purple">
                                 <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
                             </div>
-                            <span class="sbi-carousel-label">Welcome to SPX BANK</span>
+                            <span class="spx-carousel-label">Welcome to SPX BANK</span>
                         </div>
-                        <div class="sbi-carousel-item" onclick="triggerQuickAction('Elevate Spends offer')">
-                            <div class="sbi-carousel-icon bg-pink">
+                        <div class="spx-carousel-item" onclick="triggerQuickAction('Elevate Spends offer')">
+                            <div class="spx-carousel-icon bg-pink">
                                 <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="19" x2="12" y2="5"></line><polyline points="5 12 12 5 19 12"></polyline></svg>
                             </div>
-                            <span class="sbi-carousel-label">Elevate spends</span>
+                            <span class="spx-carousel-label">Elevate spends</span>
                         </div>
-                        <div class="sbi-carousel-item" onclick="triggerQuickAction('Secure Savings Scheme')">
-                            <div class="sbi-carousel-icon bg-indigo">
+                        <div class="spx-carousel-item" onclick="triggerQuickAction('Secure Savings Scheme')">
+                            <div class="spx-carousel-icon bg-indigo">
                                 <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
                             </div>
-                            <span class="sbi-carousel-label">Secure Your Savings</span>
+                            <span class="spx-carousel-label">Secure Your Savings</span>
                         </div>
                     </div>
                 </div>
 
                 <!-- 2-COLUMN DASHBOARD GRID -->
-                <div class="sbi-dash-grid">
+                <div class="spx-dash-grid">
                     
                     <!-- Left: Relationship Overview -->
-                    <div class="sbi-dash-column-left">
-                        <div class="sbi-section-header-row">
-                            <h4 class="sbi-section-title">Relationship Overview</h4>
-                            <button class="sbi-view-accounts-btn" onclick="triggerQuickAction('View All Accounts')">View All Accounts</button>
+                    <div class="spx-dash-column-left">
+                        <div class="spx-section-header-row">
+                            <h4 class="spx-section-title">Relationship Overview</h4>
+                            <button class="spx-view-accounts-btn" onclick="triggerQuickAction('View All Accounts')">View All Accounts</button>
                         </div>
                         
-                        <div class="sbi-cards-container">
+                        <div class="spx-cards-container">
                             <!-- Card 1: TRANSACTION ACCOUNTS -->
-                            <div class="sbi-overview-card bg-purple-gradient">
-                                <div class="sbi-ov-card-header">
+                            <div class="spx-overview-card bg-purple-gradient">
+                                <div class="spx-ov-card-header">
                                     <span>TRANSACTION ACCOUNTS</span>
-                                    <button class="sbi-eye-btn" id="balance-eye-icon" onclick="toggleBalanceVisibility()" title="Show/Hide Balance">
+                                    <button class="spx-eye-btn" id="balance-eye-icon" onclick="toggleBalanceVisibility()" title="Show/Hide Balance">
                                         <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
                                     </button>
                                 </div>
-                                <div class="sbi-ov-card-body">
-                                    <span class="sbi-ov-label">Combined Balance</span>
-                                    <h2 class="sbi-ov-balance">$<span id="dash-balance">148,920.50</span> USD</h2>
-                                    <p class="sbi-ov-subtext" id="dash-acc-num">ACC: #8849-2049-1102</p>
-                                    <p class="sbi-ov-subtext-small" id="dash-acc-type">Premier Checking Account</p>
+                                <div class="spx-ov-card-body">
+                                    <span class="spx-ov-label">Combined Balance</span>
+                                    <h2 class="spx-ov-balance">$<span id="dash-balance">148,920.50</span> USD</h2>
+                                    <p class="spx-ov-subtext" id="dash-acc-num">ACC: #8849-2049-1102</p>
+                                    <p class="spx-ov-subtext-small" id="dash-acc-type">Premier Checking Account</p>
                                 </div>
-                                <div class="sbi-ov-card-footer">
-                                    <button class="sbi-card-action-btn" onclick="triggerQuickAction('Fund Transfer')">View Accounts</button>
-                                    <button class="sbi-card-action-btn fill" onclick="triggerQuickAction('Bank Statements')">Transactions</button>
+                                <div class="spx-ov-card-footer">
+                                    <button class="spx-card-action-btn" onclick="triggerQuickAction('Fund Transfer')">View Accounts</button>
+                                    <button class="spx-card-action-btn fill" onclick="triggerQuickAction('Bank Statements')">Transactions</button>
                                 </div>
                             </div>
 
                             <!-- Card 2: DEPOSITS -->
-                            <div class="sbi-overview-card bg-light-purple">
-                                <div class="sbi-ov-card-header">
+                            <div class="spx-overview-card bg-light-purple">
+                                <div class="spx-ov-card-header">
                                     <span>DEPOSITS</span>
                                 </div>
-                                <div class="sbi-ov-card-body flex-grow">
-                                    <span class="sbi-ov-label">Grow your money faster</span>
-                                    <p class="sbi-ov-promo-text">Get high-yield interest rates up to 7.5% per annum on Fixed & Recurring Deposits.</p>
+                                <div class="spx-ov-card-body flex-grow">
+                                    <span class="spx-ov-label">Grow your money faster</span>
+                                    <p class="spx-ov-promo-text">Get high-yield interest rates up to 7.5% per annum on Fixed & Recurring Deposits.</p>
                                 </div>
-                                <div class="sbi-ov-card-footer">
-                                    <button class="sbi-card-action-btn outline-purple" onclick="triggerQuickAction('Create Fixed Deposit')">Explore</button>
+                                <div class="spx-ov-card-footer">
+                                    <button class="spx-card-action-btn outline-purple" onclick="triggerQuickAction('Create Fixed Deposit')">Explore</button>
                                 </div>
                             </div>
 
                             <!-- Card 3: LOANS -->
-                            <div class="sbi-overview-card bg-blue-gradient">
-                                <div class="sbi-ov-card-header">
+                            <div class="spx-overview-card bg-blue-gradient">
+                                <div class="spx-ov-card-header">
                                     <span>LOANS</span>
                                 </div>
-                                <div class="sbi-ov-card-body">
-                                    <span class="sbi-ov-label">Total Outstanding Amount</span>
-                                    <h2 class="sbi-ov-balance">$0.00 USD</h2>
-                                    <p class="sbi-ov-subtext">No active loan liabilities</p>
+                                <div class="spx-ov-card-body">
+                                    <span class="spx-ov-label">Total Outstanding Amount</span>
+                                    <h2 class="spx-ov-balance">$0.00 USD</h2>
+                                    <p class="spx-ov-subtext">No active loan liabilities</p>
                                 </div>
-                                <div class="sbi-ov-card-footer">
-                                    <button class="sbi-card-action-btn" onclick="triggerQuickAction('View Loan Details')">View Details</button>
-                                    <button class="sbi-card-action-btn fill" onclick="triggerQuickAction('Apply for Loan')">Manage Loan</button>
+                                <div class="spx-ov-card-footer">
+                                    <button class="spx-card-action-btn" onclick="triggerQuickAction('View Loan Details')">View Details</button>
+                                    <button class="spx-card-action-btn fill" onclick="triggerQuickAction('Apply for Loan')">Manage Loan</button>
                                 </div>
                             </div>
                         </div>
 
                         <!-- PORTAL AUDIT LOGS SECTION -->
-                        <div class="sbi-audit-section">
-                            <h4 class="sbi-section-title-small">Portal Audit History & Status</h4>
-                            <div class="sbi-audit-list" id="activity-list">
-                                <div class="sbi-audit-item">
-                                    <div class="sbi-audit-left">
-                                        <div class="sbi-audit-icon">
+                        <div class="spx-audit-section">
+                            <h4 class="spx-section-title-small">Portal Audit History & Status</h4>
+                            <div class="spx-audit-list" id="activity-list">
+                                <div class="spx-audit-item">
+                                    <div class="spx-audit-left">
+                                        <div class="spx-audit-icon">
                                             <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#22c55e" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
                                         </div>
-                                        <div class="sbi-audit-details">
+                                        <div class="spx-audit-details">
                                             <strong>CAPTCHA & Gmail OTP Authentication</strong>
-                                            <span class="sbi-audit-time" id="last-login-time">Just Now • Verified IP</span>
+                                            <span class="spx-audit-time" id="last-login-time">Just Now • Verified IP</span>
                                         </div>
                                     </div>
-                                    <span class="sbi-audit-badge green">Passed</span>
+                                    <span class="spx-audit-badge green">Passed</span>
                                 </div>
                             </div>
                         </div>
                     </div>
 
                     <!-- Right: Services Sidebar Categories -->
-                    <div class="sbi-dash-column-right">
+                    <div class="spx-dash-column-right">
                         
                         <!-- DEPOSITS -->
-                        <div class="sbi-sidebar-widget">
-                            <div class="sbi-widget-header">
+                        <div class="spx-sidebar-widget">
+                            <div class="spx-widget-header">
                                 <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
                                 <span>Deposits</span>
                             </div>
-                            <ul class="sbi-widget-links">
+                            <ul class="spx-widget-links">
                                 <li><a href="#" onclick="triggerQuickAction('Fixed Deposit')">Fixed Deposit</a></li>
                                 <li><a href="#" onclick="triggerQuickAction('Recurring Deposit')">Recurring Deposit</a></li>
                                 <li><a href="#" onclick="triggerQuickAction('Annuity Deposit')">Annuity Deposit</a></li>
@@ -546,12 +546,12 @@
                         </div>
 
                         <!-- LOANS -->
-                        <div class="sbi-sidebar-widget">
-                            <div class="sbi-widget-header">
+                        <div class="spx-sidebar-widget">
+                            <div class="spx-widget-header">
                                 <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
                                 <span>Loans</span>
                             </div>
-                            <ul class="sbi-widget-links">
+                            <ul class="spx-widget-links">
                                 <li><a href="#" onclick="triggerQuickAction('Personal Loan')">Personal Loan</a></li>
                                 <li><a href="#" onclick="triggerQuickAction('Loan Against Mutual Fund')">Loan Against Mutual Fund</a></li>
                                 <li><a href="#" onclick="triggerQuickAction('Home Loan')">Home Loan</a></li>
@@ -561,12 +561,12 @@
                         </div>
 
                         <!-- INVESTMENTS -->
-                        <div class="sbi-sidebar-widget">
-                            <div class="sbi-widget-header">
+                        <div class="spx-sidebar-widget">
+                            <div class="spx-widget-header">
                                 <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
                                 <span>Investments</span>
                             </div>
-                            <ul class="sbi-widget-links">
+                            <ul class="spx-widget-links">
                                 <li><a href="#" onclick="triggerQuickAction('Mutual Funds')">Mutual Funds</a></li>
                                 <li><a href="#" onclick="triggerQuickAction('Demat & Securities')">Demat & Securities</a></li>
                                 <li><a href="#" onclick="triggerQuickAction('NPS')">NPS</a></li>
@@ -576,12 +576,12 @@
                         </div>
 
                         <!-- CARDS -->
-                        <div class="sbi-sidebar-widget">
-                            <div class="sbi-widget-header">
+                        <div class="spx-sidebar-widget">
+                            <div class="spx-widget-header">
                                 <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect><line x1="1" y1="10" x2="23" y2="10"></line></svg>
                                 <span>Cards</span>
                             </div>
-                            <ul class="sbi-widget-links">
+                            <ul class="spx-widget-links">
                                 <li><a href="#" onclick="triggerQuickAction('Credit Cards')">Credit Cards</a></li>
                                 <li><a href="#" onclick="triggerQuickAction('Debit Cards')">Debit Cards</a></li>
                                 <li><a href="#" onclick="triggerQuickAction('Forex Cards')">Forex Cards</a></li>
@@ -609,31 +609,31 @@
                 <div class="otp-drawer-content">
                     <p class="otp-delivery-notice">
                         An OTP has been sent to your registered mobile number / Gmail: <br>
-                        <strong id="otp-target-display" class="sbi-otp-target">user@gmail.com</strong>
+                        <strong id="otp-target-display" class="spx-otp-target">user@gmail.com</strong>
                     </p>
 
                     <!-- OTP Code Inputs -->
-                    <div class="sbi-otp-fields-row">
+                    <div class="spx-otp-fields-row">
                         <div class="otp-inputs-wrapper" id="otp-inputs">
-                            <input type="text" maxlength="1" pattern="[0-9]" inputmode="numeric" class="otp-box sbi-otp-box" data-index="0" autofocus>
-                            <input type="text" maxlength="1" pattern="[0-9]" inputmode="numeric" class="otp-box sbi-otp-box" data-index="1">
-                            <input type="text" maxlength="1" pattern="[0-9]" inputmode="numeric" class="otp-box sbi-otp-box" data-index="2">
-                            <input type="text" maxlength="1" pattern="[0-9]" inputmode="numeric" class="otp-box sbi-otp-box" data-index="3">
-                            <input type="text" maxlength="1" pattern="[0-9]" inputmode="numeric" class="otp-box sbi-otp-box" data-index="4">
-                            <input type="text" maxlength="1" pattern="[0-9]" inputmode="numeric" class="otp-box sbi-otp-box" data-index="5">
+                            <input type="text" maxlength="1" pattern="[0-9]" inputmode="numeric" class="otp-box spx-otp-box" data-index="0" autofocus>
+                            <input type="text" maxlength="1" pattern="[0-9]" inputmode="numeric" class="otp-box spx-otp-box" data-index="1">
+                            <input type="text" maxlength="1" pattern="[0-9]" inputmode="numeric" class="otp-box spx-otp-box" data-index="2">
+                            <input type="text" maxlength="1" pattern="[0-9]" inputmode="numeric" class="otp-box spx-otp-box" data-index="3">
+                            <input type="text" maxlength="1" pattern="[0-9]" inputmode="numeric" class="otp-box spx-otp-box" data-index="4">
+                            <input type="text" maxlength="1" pattern="[0-9]" inputmode="numeric" class="otp-box spx-otp-box" data-index="5">
                         </div>
-                        <button type="button" class="sbi-otp-reveal-btn" onclick="showToast('OTP is hidden for security', 'info')">
+                        <button type="button" class="spx-otp-reveal-btn" onclick="showToast('OTP is hidden for security', 'info')">
                             <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
                         </button>
                     </div>
 
-                    <div class="sbi-otp-timer-row">
-                        <span class="sbi-otp-timer-text">Resend OTP in <strong id="otp-countdown">35s</strong></span>
-                        <button id="resend-otp-btn" class="sbi-otp-resend-btn" onclick="resendOtpCode()" disabled>Resend OTP</button>
+                    <div class="spx-otp-timer-row">
+                        <span class="spx-otp-timer-text">Resend OTP in <strong id="otp-countdown">35s</strong></span>
+                        <button id="resend-otp-btn" class="spx-otp-resend-btn" onclick="resendOtpCode()" disabled>Resend OTP</button>
                     </div>
 
-                    <div class="sbi-otp-submit-row">
-                        <button type="button" class="sbi-btn-otp-proceed" id="btn-verify-otp" onclick="submitOtpVerification()">
+                    <div class="spx-otp-submit-row">
+                        <button type="button" class="spx-btn-otp-proceed" id="btn-verify-otp" onclick="submitOtpVerification()">
                             <span class="btn-text">Proceed</span>
                             <span class="btn-spinner hidden"></span>
                         </button>
@@ -661,13 +661,13 @@
 
 
         <!-- FOOTER -->
-        <footer class="sbi-portal-footer">
-            <div class="sbi-footer-container">
-                <div class="sbi-footer-links">
+        <footer class="spx-portal-footer">
+            <div class="spx-footer-container">
+                <div class="spx-footer-links">
                     <a href="#about" onclick="triggerQuickAction('About Us')">About Us</a>
-                    <span class="sbi-footer-divider">|</span>
+                    <span class="spx-footer-divider">|</span>
                     <a href="#terms" onclick="triggerQuickAction('Terms & Conditions')">Terms & Conditions</a>
-                    <span class="sbi-footer-divider">|</span>
+                    <span class="spx-footer-divider">|</span>
                     <a href="#privacy" onclick="triggerQuickAction('Privacy Policy')">Privacy Policy</a>
                 </div>
             </div>
