@@ -1,5 +1,5 @@
 import os
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, render_template, redirect
 from flask_cors import CORS
 import mysql.connector
 import bcrypt
@@ -12,18 +12,56 @@ import uuid
 
 load_dotenv()
 
-app = Flask(__name__)
-CORS(app)
+app = Flask(__name__, static_folder='public', static_url_path='/public')
+app.secret_key = os.environ.get('SECRET_KEY', 'default-dev-key-change-in-prod')
+app.config['SESSION_COOKIE_SAMESITE'] = 'Lax'
+app.config['SESSION_COOKIE_HTTPONLY'] = True
+CORS(app, supports_credentials=True)
 
 DB_CONFIG = {
     'host': os.environ.get('DB_HOST', 'localhost'),
+    'port': int(os.environ.get('DB_PORT', 3306)),
     'user': os.environ.get('DB_USER', 'root'),
     'password': os.environ.get('DB_PASS', ''),
     'database': os.environ.get('DB_NAME', 'spxbank')
 }
 
+db_pool = mysql.connector.pooling.MySQLConnectionPool(
+    pool_name="spxbank_pool",
+    pool_size=5,
+    pool_reset_session=True,
+    **DB_CONFIG
+)
+
 def get_db_connection():
-    return mysql.connector.connect(**DB_CONFIG)
+    return db_pool.get_connection()
+
+def run_migrations():
+    """Auto-migrate DB schema on startup. Safe to run repeatedly."""
+    migrations = [
+        # Add action column to otps if it doesn't already exist
+        "ALTER TABLE otps ADD COLUMN action VARCHAR(50) NOT NULL DEFAULT 'LOGIN'",
+    ]
+    try:
+        conn = get_db_connection()
+        cursor = conn.cursor()
+        for sql in migrations:
+            try:
+                cursor.execute(sql)
+                conn.commit()
+                print(f"[MIGRATION OK] {sql[:60]}...")
+            except Exception as e:
+                # 1060 = Duplicate column name — column already exists, safe to skip
+                if hasattr(e, 'errno') and e.errno == 1060:
+                    print(f"[MIGRATION SKIP] Column already exists — {sql[:60]}")
+                else:
+                    print(f"[MIGRATION WARN] {e}")
+        cursor.close()
+        conn.close()
+    except Exception as e:
+        print(f"[MIGRATION ERROR] Could not connect for migrations: {e}")
+
+run_migrations()
 
 def get_email_template(action, first_name, otp):
     subject = "Login Verification OTP"
@@ -122,6 +160,37 @@ def send_real_email(to_email, subject, html_body, plain_text):
         print(f"Email error: {e}")
         return False
 
+# --- VIEW ROUTES ---
+@app.route('/')
+def root():
+    """Redirect root to canonical welcome URL."""
+    return redirect('/registration/welcome')
+
+@app.route('/registration/welcome')
+def index():
+    """Entry point: Login & Registration SPA."""
+    return render_template('index.html')
+
+@app.route('/registration/account-identification')
+def password_recovery():
+    """Password Recovery landing — serves the same SPA with the forgot-password view."""
+    return render_template('index.html')
+
+@app.route('/home/landingPage/homePage')
+def overview():
+    """Main authenticated dashboard."""
+    return render_template('overview.html')
+
+@app.route('/logout')
+def logout_redirect():
+    """Server-side logout: instructs the client back to the welcome / login page."""
+    return redirect('/registration/welcome')
+
+@app.route('/home/landingPage/manageRelationship/transactionAccounts')
+def accounts():
+    return render_template('accounts.html')
+# -------------------
+
 @app.route('/api/register', methods=['POST'])
 def register():
     data = request.json
@@ -138,11 +207,25 @@ def register():
 
     try:
         conn = get_db_connection()
-        cursor = conn.cursor()
+        cursor = conn.cursor(dictionary=True)
         
+        # 1. Enforce OTP validation
+        cursor.execute("SELECT * FROM otps WHERE email=%s AND used=TRUE ORDER BY created_at DESC LIMIT 1", (email,))
+        otp_record = cursor.fetchone()
+        
+        if not otp_record:
+            return jsonify({'success': False, 'message': 'OTP verification required'}), 403
+            
+        if otp_record['expires_at'] < datetime.now():
+            return jsonify({'success': False, 'message': 'Verified OTP has expired. Please request a new one.'}), 403
+
+        # 2. Duplicate check
         cursor.execute("SELECT id FROM users WHERE username=%s OR email=%s", (username, email))
         if cursor.fetchone():
             return jsonify({'success': False, 'message': 'Username or email already exists'}), 409
+            
+        # 3. Consume OTP
+        cursor.execute("DELETE FROM otps WHERE id=%s", (otp_record['id'],))
         
         account_number = f"#8849-{random.randint(1000, 9999)}-{random.randint(1000, 9999)}"
 
@@ -187,9 +270,17 @@ def login():
 
         # Check lockout
         now = datetime.now()
-        if user['lockout_until'] and user['lockout_until'] > now:
-            remaining = int((user['lockout_until'] - now).total_seconds())
-            return jsonify({'success': False, 'lockout': True, 'remaining_seconds': remaining, 'message': f'Account locked. Please wait {remaining} seconds.'}), 423
+        if user['lockout_until']:
+            if user['lockout_until'] > now:
+                remaining = int((user['lockout_until'] - now).total_seconds())
+                print(f"[LOCKOUT BLOCKED] Login attempt rejected for locked user: {username}")
+                return jsonify({'success': False, 'error': 'Account locked', 'lockout': True, 'remaining_seconds': remaining, 'message': f'Account locked. Please wait {remaining} seconds.'}), 423
+            else:
+                cursor.execute("UPDATE users SET failed_attempts=0, lockout_until=NULL WHERE id=%s", (user['id'],))
+                conn.commit()
+                user['failed_attempts'] = 0
+                user['lockout_until'] = None
+                print(f"[LOCKOUT EXPIRED] Resetting failed attempts and lockout timestamp for user: {username}")
 
         # Verify password
         if bcrypt.checkpw(password.encode('utf-8'), user['password_hash'].encode('utf-8')):
@@ -213,7 +304,7 @@ def login():
                 lockout_time = now + timedelta(seconds=30)
                 cursor.execute("UPDATE users SET failed_attempts=%s, lockout_until=%s WHERE id=%s", (attempts, lockout_time, user['id']))
                 conn.commit()
-                return jsonify({'success': False, 'lockout': True, 'remaining_seconds': 30, 'message': 'Account locked. Please wait 30 seconds.'}), 423
+                return jsonify({'success': False, 'error': 'Account locked', 'lockout': True, 'remaining_seconds': 30, 'message': 'Account locked. Please wait 30 seconds.'}), 423
             else:
                 cursor.execute("UPDATE users SET failed_attempts=%s WHERE id=%s", (attempts, user['id']))
                 conn.commit()
@@ -250,6 +341,11 @@ def send_otp():
         cursor.execute("SELECT first_name, username FROM users WHERE email=%s", (email,))
         user_record = cursor.fetchone()
         
+        if action == 'REGISTER':
+            cursor.execute("SELECT id FROM users WHERE username=%s OR email=%s", (frontend_username, email))
+            if cursor.fetchone():
+                return jsonify({'success': False, 'message': 'Username or email already exists'}), 409
+        
         if action == 'RESET_PASSWORD' and not user_record:
             return jsonify({'success': False, 'message': 'No account found with this email address'}), 404
 
@@ -259,10 +355,10 @@ def send_otp():
             elif user_record.get('username'):
                 first_name = user_record['username']
 
-        cursor.execute("INSERT INTO otps (email, otp, expires_at) VALUES (%s, %s, %s)", (email, otp, expires_at))
+        cursor.execute("INSERT INTO otps (email, otp, action, expires_at) VALUES (%s, %s, %s, %s)", (email, otp, action, expires_at))
         conn.commit()
     except Exception as e:
-        print(f"DB Error: {e}")
+        print(f"[SEND-OTP ERROR] {e}")
         return jsonify({'success': False, 'message': 'Server error'}), 500
     finally:
         if 'cursor' in locals(): cursor.close()
@@ -294,6 +390,15 @@ def verify_otp():
         if record['otp'] == otp:
             cursor.execute("UPDATE otps SET used=TRUE WHERE id=%s", (record['id'],))
             conn.commit()
+
+            # For RESET_PASSWORD: store verified email in server-side session
+            action = data.get('action', '')
+            if action == 'RESET_PASSWORD':
+                from flask import session as flask_session
+                flask_session['verified_reset_email'] = email
+                flask_session['verified_reset_at'] = datetime.now().isoformat()
+                print(f"[RESET SESSION SET] verified_reset_email={email}")
+
             return jsonify({'success': True})
         else:
             return jsonify({'success': False, 'message': 'Invalid OTP'})
@@ -307,6 +412,7 @@ def verify_otp():
 
 @app.route('/api/reset-password', methods=['POST'])
 def reset_password():
+    from flask import session as flask_session
     data = request.json
     email = data.get('email')
     new_password = data.get('password')
@@ -314,39 +420,66 @@ def reset_password():
     if not email or not new_password:
         return jsonify({'success': False, 'message': 'Missing data'}), 400
 
-    hashed_pw = bcrypt.hashpw(new_password.encode('utf-8'), bcrypt.gensalt())
+    # --- Auth check: Flask session (primary) OR DB-verified OTP fallback ---
+    session_email = flask_session.get('verified_reset_email')
+    is_session_verified = (session_email == email)
+
+    if not is_session_verified:
+        # Fallback: check otps table for a verified RESET_PASSWORD OTP within 15 min
+        try:
+            conn_check = get_db_connection()
+            cursor_check = conn_check.cursor(dictionary=True, buffered=True)
+            cursor_check.execute(
+                "SELECT id FROM otps WHERE email=%s AND action='RESET_PASSWORD' AND used=TRUE AND created_at >= NOW() - INTERVAL 15 MINUTE ORDER BY created_at DESC LIMIT 1",
+                (email,)
+            )
+            otp_fallback = cursor_check.fetchone()
+            cursor_check.close()
+            conn_check.close()
+        except Exception as db_e:
+            print(f"[RESET AUTH CHECK ERROR] {db_e}")
+            otp_fallback = None
+
+        if not otp_fallback:
+            print(f"[RESET REJECTED] No valid session or verified OTP for {email}")
+            return jsonify({'success': False, 'message': 'Session expired or unauthorized. Please restart the password reset flow.'}), 403
+
+        print(f"[RESET AUTH] DB-fallback OTP verification passed for {email}")
+    else:
+        print(f"[RESET AUTH] Session verification passed for {email}")
 
     try:
         conn = get_db_connection()
 
-        # Use a buffered cursor (or close after fetch) to avoid "Unread result found"
+        # Fetch the current password hash to check for reuse
         cursor = conn.cursor(dictionary=True, buffered=True)
-        cursor.execute(
-            "SELECT id FROM otps WHERE email=%s AND used=TRUE AND created_at >= NOW() - INTERVAL 15 MINUTE",
-            (email,)
-        )
-        otp_row = cursor.fetchone()
+        cursor.execute("SELECT password_hash FROM users WHERE email=%s", (email,))
+        user_row = cursor.fetchone()
         cursor.close()
 
-        if not otp_row:
-            return jsonify({'success': False, 'message': 'No verified OTP found for this email. Please request a new OTP.'}), 403
+        if user_row and bcrypt.checkpw(new_password.encode('utf-8'), user_row['password_hash'].encode('utf-8')):
+            return jsonify({'success': False, 'error': 'same_password', 'message': 'New password cannot be the same as the old password.'}), 400
 
-        # Use a fresh cursor for the UPDATE 
+        hashed_pw = bcrypt.hashpw(new_password.encode('utf-8'), bcrypt.gensalt())
+
         cursor = conn.cursor()
         cursor.execute("UPDATE users SET password_hash=%s WHERE email=%s", (hashed_pw, email))
         conn.commit()
 
         affected = cursor.rowcount
-        print(f"Reset password request for {email}, affected rows: {affected}")
-
+        print(f"[RESET SUCCESS] Password updated for {email}, rows affected: {affected}")
         cursor.close()
 
         if affected == 0:
             return jsonify({'success': False, 'message': 'No account found with this email address or update failed'}), 404
 
+        # Clear the session flag — single use
+        flask_session.pop('verified_reset_email', None)
+        flask_session.pop('verified_reset_at', None)
+
         return jsonify({'success': True, 'message': 'Password reset successful'})
     except Exception as e:
-        print(f"DB Error: {e}")
+        print(f"[RESET ERROR] {e}")
         return jsonify({'success': False, 'message': 'Server error'}), 500
     finally:
         if 'conn' in locals() and conn:

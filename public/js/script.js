@@ -285,17 +285,66 @@ async function handleLoginSubmit(e) {
         setButtonLoading(btn, false);
 
         if (!data.success) {
-            if (data.attempts_remaining !== undefined || data.lockout) {
-                // Show inline error for passwords/lockouts
-                errorMsgDiv.textContent = data.message;
-                errorMsgDiv.style.display = 'block';
+            // Always show inline error message
+            errorMsgDiv.textContent = data.message;
+            errorMsgDiv.style.display = 'block';
+
+            if (response.status === 423 && data.lockout && data.remaining_seconds) {
+                // --- HTTP 423: ACCOUNT LOCKED ---
+                let timeLeft = data.remaining_seconds;
+                const loginUser = document.getElementById('login-username');
+                const loginPass = document.getElementById('login-password');
+                const loginCap = document.getElementById('login-captcha-input');
+
+                // Immediately clear ALL input fields (username, password, captcha)
+                loginUser.value = '';
+                loginPass.value = '';
+                loginCap.value = '';
+
+                // Disable all inputs and the login button
+                btn.disabled = true;
+                loginUser.disabled = true;
+                loginPass.disabled = true;
+                loginCap.disabled = true;
+
+                // Re-clear after disable inside rAF to defeat any browser autofill
+                // that may fire asynchronously after the initial .value = '' call
+                requestAnimationFrame(() => {
+                    loginUser.value = '';
+                    loginPass.value = '';
+                    loginCap.value = '';
+                });
+
+                // Real-time countdown: update every 1s
+                const lockoutInterval = setInterval(() => {
+                    timeLeft--;
+                    errorMsgDiv.textContent = `Account locked. Please wait ${timeLeft}s...`;
+
+                    if (timeLeft <= 0) {
+                        clearInterval(lockoutInterval);
+
+                        // Clear the error banner
+                        errorMsgDiv.style.display = 'none';
+                        errorMsgDiv.textContent = '';
+
+                        // Re-enable all inputs and button
+                        btn.disabled = false;
+                        loginUser.disabled = false;
+                        loginPass.disabled = false;
+                        loginCap.disabled = false;
+
+                        // Auto-refresh CAPTCHA for a clean retry
+                        generateCaptcha('login');
+                    }
+                }, 1000);
+
             } else {
-                // Fallback to toast for generic errors
-                showToast(data.message || 'Invalid username or password', 'error');
-            }
-            
-            // Only generate new captcha if it's not a lockout
-            if (!data.lockout) {
+                // --- HTTP 401: INCORRECT CREDENTIALS ---
+                // Keep username intact, clear password + captcha, refresh CAPTCHA
+                const loginPass = document.getElementById('login-password');
+                const loginCap = document.getElementById('login-captcha-input');
+                loginPass.value = '';
+                loginCap.value = '';
                 generateCaptcha('login');
             }
             return;
@@ -341,40 +390,9 @@ async function handleRegisterSubmit(e) {
     setButtonLoading(btn, true);
 
     try {
-        const response = await fetch('http://localhost:5000/api/register', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ username, email, password, firstName, lastName })
-        });
-        const data = await response.json();
-        
         setButtonLoading(btn, false);
-
-        if (!data.success) {
-            if (errorMsgDiv) {
-                errorMsgDiv.textContent = data.message || 'Registration failed';
-                errorMsgDiv.style.display = 'block';
-            } else {
-                showToast(data.message || 'Registration failed', 'error');
-            }
-            generateCaptcha('reg');
-            return;
-        }
-
-        triggerOtpFlow('REGISTER', email, { newUserObj: data.user });
-        
-        // Clear Registration Form Post-Success
-        const regForm = document.getElementById('register-form');
-        if (regForm) regForm.reset();
-        ['reg-firstname', 'reg-lastname', 'reg-email', 'reg-username', 'reg-password', 'reg-captcha-input'].forEach(id => {
-            const el = document.getElementById(id);
-            if (el) el.value = '';
-        });
-        
-        // Clear password strength indicator
-        if (typeof checkPasswordStrength === 'function') {
-            checkPasswordStrength('');
-        }
+        const payload = { username, email, password, firstName, lastName };
+        triggerOtpFlow('REGISTER', email, payload);
     } catch (err) {
         setButtonLoading(btn, false);
         showToast('Cannot connect to server', 'error');
@@ -425,16 +443,38 @@ async function handleNewPasswordSubmit(e) {
         const response = await fetch('http://localhost:5000/api/reset-password', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
+            credentials: 'include',
             body: JSON.stringify({ email: email, password: newPassword })
         });
         
         const data = await response.json();
         setButtonLoading(btn, false);
 
+        // Helper refs for the two password fields and inline error div
+        const newPwField = document.getElementById('new-password');
+        const confirmPwField = document.getElementById('confirm-new-password');
+        const resetErrDiv = document.getElementById('reset-pw-error-msg');
+
         if (!response.ok || !data.success) {
-            showToast(data.message || 'Password reset failed', 'error');
+            if (response.status === 400 && data.error === 'same_password') {
+                // Show inline red error directly below Confirm New Password
+                resetErrDiv.textContent = data.message;
+                resetErrDiv.style.display = 'block';
+                // Immediately clear both password fields for a fresh re-entry
+                newPwField.value = '';
+                confirmPwField.value = '';
+                newPwField.focus();
+            } else {
+                // Generic errors go to toast
+                resetErrDiv.style.display = 'none';
+                showToast(data.message || 'Password reset failed', 'error');
+            }
             return;
         }
+
+        // Clear any residual inline error on success
+        resetErrDiv.style.display = 'none';
+        resetErrDiv.textContent = '';
 
         document.getElementById('new-password').value = '';
         document.getElementById('confirm-new-password').value = '';
@@ -444,7 +484,7 @@ async function handleNewPasswordSubmit(e) {
         const resetForm2 = document.getElementById('forgot-password-form-2');
         if (resetForm2) resetForm2.reset();
         
-        showToast('Credentials updated successfully! Please sign in.', 'success');
+        showToast('Password updated successfully! Please login.', 'success');
         switchView('login');
         
         document.getElementById('login-username').value = '';
@@ -482,10 +522,15 @@ async function triggerOtpFlow(action, email, payload) {
 
 async function sendRealOtpEmail(targetEmail, action) {
     try {
+        const bodyData = { email: targetEmail, action: action };
+        if (action === 'REGISTER' && typeof pendingPayload !== 'undefined' && pendingPayload && pendingPayload.username) {
+            bodyData.username = pendingPayload.username;
+        }
+        
         const response = await fetch('http://localhost:5000/api/send-otp', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ email: targetEmail, action: action })
+            body: JSON.stringify(bodyData)
         });
         const data = await response.json();
 
@@ -591,7 +636,8 @@ async function submitOtpVerification() {
         const response = await fetch('http://localhost:5000/api/verify-otp', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ email: targetEmail, otp: enteredCode })
+            credentials: 'include',
+            body: JSON.stringify({ email: targetEmail, otp: enteredCode, action: pendingOtpAction })
         });
         const data = await response.json();
         
@@ -607,12 +653,44 @@ async function submitOtpVerification() {
         if (pendingOtpAction === 'LOGIN') {
             completeLogin(pendingPayload.user);
         } else if (pendingOtpAction === 'REGISTER') {
-            showToast('Registration successful! Please log in.', 'success');
-            switchView('login');
+            try {
+                const regResponse = await fetch('http://localhost:5000/api/register', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(pendingPayload)
+                });
+                const regData = await regResponse.json();
+                
+                if (regData.success) {
+                    showToast('Registration successful! Please log in.', 'success');
+                    const regForm = document.getElementById('register-form');
+                    if (regForm) regForm.reset();
+                    ['reg-firstname', 'reg-lastname', 'reg-email', 'reg-username', 'reg-password', 'reg-captcha-input'].forEach(id => {
+                        const el = document.getElementById(id);
+                        if (el) el.value = '';
+                    });
+                    if (typeof checkPasswordStrength === 'function') checkPasswordStrength('');
+                    switchView('login');
+                } else {
+                    showToast(regData.message || 'Registration failed', 'error');
+                }
+            } catch (e) {
+                showToast('Registration server error', 'error');
+            }
         } else if (pendingOtpAction === 'RESET_PASSWORD') {
             document.getElementById('reset-verified-email').textContent = pendingPayload.userEmail;
             document.getElementById('forgot-password-form-1').classList.add('hidden');
             document.getElementById('forgot-password-form-2').classList.remove('hidden');
+
+            // Auto-dismiss the OTP verified banner after 3.5 seconds
+            const otpBanner = document.querySelector('#forgot-password-form-2 .step-indicator');
+            if (otpBanner) {
+                setTimeout(() => {
+                    otpBanner.classList.add('fade-out');
+                    // Remove from layout after transition completes (400ms)
+                    setTimeout(() => { otpBanner.style.display = 'none'; }, 420);
+                }, 3500);
+            }
         }
 
     } catch (err) {
@@ -639,39 +717,61 @@ function completeLogin(user) {
 
     document.getElementById('last-login-time').textContent = `Just Now • ${new Date().toLocaleTimeString()} (Gmail OTP Verified)`;
 
-    switchView('dashboard');
+    window.location.href = '/home/landingPage/homePage';
 }
 
 function checkExistingSession() {
     const sessionStr = sessionStorage.getItem('bank_active_session');
-    if (sessionStr) {
-        try {
-            const user = JSON.parse(sessionStr);
-            completeLogin(user);
-        } catch(e) {
-            sessionStorage.removeItem('bank_active_session');
+    if (!sessionStr) return;
+
+    const onOverviewPage = window.location.pathname.startsWith('/home/landingPage/');
+
+    try {
+        const user = JSON.parse(sessionStr);
+        if (onOverviewPage) {
+            // Already on dashboard — just populate the DOM, do NOT redirect.
+            currentUser = user;
+            const nameEl = document.getElementById('dash-user-name');
+            const accEl  = document.getElementById('dash-acc-num');
+            const typeEl = document.getElementById('dash-acc-type');
+            const balEl  = document.getElementById('dash-balance');
+            const avEl   = document.getElementById('dash-avatar');
+            const tsEl   = document.getElementById('last-login-time');
+            if (nameEl) nameEl.textContent = user.name;
+            if (accEl)  accEl.textContent  = `ACC: ${user.accountNumber}`;
+            if (typeEl) typeEl.textContent  = user.accountType || 'Premier Vault Account';
+            if (balEl)  balEl.textContent   = user.balance || '148,920.50';
+            if (avEl) {
+                const initials = user.name.split(' ').map(n => n[0]).join('').toUpperCase().substring(0, 2);
+                avEl.textContent = initials || 'JD';
+            }
+            if (tsEl) tsEl.textContent = `Last Session • (Gmail OTP Verified)`;
+        } else {
+            // On the login SPA — redirect to dashboard since session is valid.
+            window.location.href = '/home/landingPage/homePage';
         }
+    } catch(e) {
+        sessionStorage.removeItem('bank_active_session');
     }
 }
 
 function handleLogout() {
     sessionStorage.removeItem('bank_active_session');
     currentUser = null;
-    
-    document.getElementById('login-username').value = '';
-    document.getElementById('login-password').value = '';
-    const loginError = document.getElementById('login-error-msg');
-    if (loginError) {
-        loginError.style.display = 'none';
-        loginError.textContent = '';
-    }
-    const loginForm = document.getElementById('login-form');
-    if (loginForm) loginForm.reset();
-    
-    switchView('login');
+    // Navigate to server-side logout route which clears any server session
+    // and redirects to /registration/welcome.
+    window.location.href = '/logout';
 }
 
 function triggerQuickAction(actionName) {
+    if (actionName === 'Overview') {
+        window.location.href = '/home/landingPage/homePage';
+        return;
+    }
+    if (actionName === 'Accounts dashboard' || actionName === 'Accounts') {
+        window.location.href = '/home/landingPage/manageRelationship/transactionAccounts';
+        return;
+    }
     showTimeoutModal("This feature is currently under development.");
 }
 
@@ -787,3 +887,224 @@ function showToast(message, type = 'info') {
         setTimeout(() => toast.remove(), 300);
     }, 4500);
 }
+let previouslyActiveTab = null;
+
+document.addEventListener('DOMContentLoaded', () => {
+  const paymentsBtn    = document.getElementById('nav-payments-tab');
+  const depositsBtn    = document.getElementById('nav-deposits-tab');
+  const loansBtn       = document.getElementById('nav-loans-tab');
+  const cardsBtn       = document.getElementById('nav-cards-tab');
+  const investmentsBtn = document.getElementById('nav-investments-tab');
+  const insuranceBtn   = document.getElementById('nav-insurance-tab');
+  const servicesBtn    = document.getElementById('nav-services-tab');
+  const megaMenu       = document.querySelector('.spx-mega-menu');
+  const depositsMegaMenu = document.querySelector('.spx-deposits-mega-menu');
+  const loansMegaMenu  = document.querySelector('.spx-loans-mega-menu');
+  const cardsMegaMenu  = document.querySelector('.spx-cards-mega-menu');
+  const investmentsMegaMenu = document.querySelector('.spx-investments-mega-menu');
+  const insuranceMegaMenu = document.querySelector('.spx-insurance-mega-menu');
+  const servicesMegaMenu = document.querySelector('.spx-services-mega-menu');
+  const overlay        = document.getElementById('mega-menu-overlay');
+
+  // ── Helper: close ALL mega-menus and restore previously-active tab ──
+  function closeAllMenus(restoreTab) {
+    if (megaMenu)        { megaMenu.classList.remove('active'); }
+    if (depositsMegaMenu){ depositsMegaMenu.classList.remove('active'); }
+    if (loansMegaMenu)   { loansMegaMenu.classList.remove('active'); }
+    if (cardsMegaMenu)   { cardsMegaMenu.classList.remove('active'); }
+    if (investmentsMegaMenu){ investmentsMegaMenu.classList.remove('active'); }
+    if (insuranceMegaMenu){ insuranceMegaMenu.classList.remove('active'); }
+    if (servicesMegaMenu){ servicesMegaMenu.classList.remove('active'); }
+    if (paymentsBtn)     { paymentsBtn.classList.remove('mega-active'); }
+    if (depositsBtn)     { depositsBtn.classList.remove('mega-active'); }
+    if (loansBtn)        { loansBtn.classList.remove('mega-active'); }
+    if (cardsBtn)        { cardsBtn.classList.remove('mega-active'); }
+    if (investmentsBtn)  { investmentsBtn.classList.remove('mega-active'); }
+    if (insuranceBtn)    { insuranceBtn.classList.remove('mega-active'); }
+    if (servicesBtn)     { servicesBtn.classList.remove('mega-active'); }
+    if (overlay)         { overlay.classList.remove('active'); }
+    if (restoreTab && previouslyActiveTab) {
+      previouslyActiveTab.classList.add('active');
+      previouslyActiveTab = null;
+    }
+  }
+
+  // ── Helper: open a specific menu, centred under its trigger button ──
+  function openMenu(menu, triggerBtn) {
+    if (!menu || !triggerBtn) return;
+    const tabRect    = triggerBtn.getBoundingClientRect();
+    const parentRect = menu.offsetParent
+        ? menu.offsetParent.getBoundingClientRect()
+        : { left: 0 };
+    const tabCentre  = tabRect.left + tabRect.width / 2 - parentRect.left;
+    const menuHalf   = menu.offsetWidth / 2 || 270; // fallback 270 = 540/2
+    menu.style.left      = (tabCentre - menuHalf) + 'px';
+    menu.style.transform = 'none';
+    menu.classList.add('active');
+    triggerBtn.classList.add('mega-active');
+    if (overlay) overlay.classList.add('active');
+  }
+
+  // ── Payments tab ──
+  if (paymentsBtn && megaMenu) {
+    paymentsBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      const isOpening = !megaMenu.classList.contains('active');
+      if (isOpening) {
+        // Snapshot active tab before closing it
+        const activeTab = document.querySelector('.spx-nav-item.active');
+        if (activeTab && activeTab !== paymentsBtn) {
+          previouslyActiveTab = activeTab;
+          activeTab.classList.remove('active');
+        }
+        closeAllMenus(false);   // close Deposits (if open) without restoring
+        openMenu(megaMenu, paymentsBtn);
+      } else {
+        closeAllMenus(true);
+      }
+    });
+  }
+
+  // ── Deposits tab ──
+  if (depositsBtn && depositsMegaMenu) {
+    depositsBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      const isOpening = !depositsMegaMenu.classList.contains('active');
+      if (isOpening) {
+        // Snapshot active tab before closing it
+        const activeTab = document.querySelector('.spx-nav-item.active');
+        if (activeTab && activeTab !== depositsBtn) {
+          previouslyActiveTab = activeTab;
+          activeTab.classList.remove('active');
+        }
+        closeAllMenus(false);   // close Payments (if open) without restoring
+        openMenu(depositsMegaMenu, depositsBtn);
+      } else {
+        closeAllMenus(true);
+      }
+    });
+  }
+
+  // ── Loans tab ──
+  if (loansBtn && loansMegaMenu) {
+    loansBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      const isOpening = !loansMegaMenu.classList.contains('active');
+      if (isOpening) {
+        // Snapshot active tab before closing it
+        const activeTab = document.querySelector('.spx-nav-item.active');
+        if (activeTab && activeTab !== loansBtn) {
+          previouslyActiveTab = activeTab;
+          activeTab.classList.remove('active');
+        }
+        closeAllMenus(false);   // close Payments/Deposits (if open) without restoring
+        openMenu(loansMegaMenu, loansBtn);
+      } else {
+        closeAllMenus(true);
+      }
+    });
+  }
+
+  // ── Cards tab ──
+  if (cardsBtn && cardsMegaMenu) {
+    cardsBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      const isOpening = !cardsMegaMenu.classList.contains('active');
+      if (isOpening) {
+        // Snapshot active tab before closing it
+        const activeTab = document.querySelector('.spx-nav-item.active');
+        if (activeTab && activeTab !== cardsBtn) {
+          previouslyActiveTab = activeTab;
+          activeTab.classList.remove('active');
+        }
+        closeAllMenus(false);
+        openMenu(cardsMegaMenu, cardsBtn);
+      } else {
+        closeAllMenus(true);
+      }
+    });
+  }
+
+  // ── Investments tab ──
+  if (investmentsBtn && investmentsMegaMenu) {
+    investmentsBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      const isOpening = !investmentsMegaMenu.classList.contains('active');
+      if (isOpening) {
+        // Snapshot active tab before closing it
+        const activeTab = document.querySelector('.spx-nav-item.active');
+        if (activeTab && activeTab !== investmentsBtn) {
+          previouslyActiveTab = activeTab;
+          activeTab.classList.remove('active');
+        }
+        closeAllMenus(false);
+        openMenu(investmentsMegaMenu, investmentsBtn);
+      } else {
+        closeAllMenus(true);
+      }
+    });
+  }
+
+  // ── Insurance tab ──
+  if (insuranceBtn && insuranceMegaMenu) {
+    insuranceBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      const isOpening = !insuranceMegaMenu.classList.contains('active');
+      if (isOpening) {
+        // Snapshot active tab before closing it
+        const activeTab = document.querySelector('.spx-nav-item.active');
+        if (activeTab && activeTab !== insuranceBtn) {
+          previouslyActiveTab = activeTab;
+          activeTab.classList.remove('active');
+        }
+        closeAllMenus(false);
+        openMenu(insuranceMegaMenu, insuranceBtn);
+      } else {
+        closeAllMenus(true);
+      }
+    });
+  }
+
+  // ── Services tab ──
+  if (servicesBtn && servicesMegaMenu) {
+    servicesBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      const isOpening = !servicesMegaMenu.classList.contains('active');
+      if (isOpening) {
+        // Snapshot active tab before closing it
+        const activeTab = document.querySelector('.spx-nav-item.active');
+        if (activeTab && activeTab !== servicesBtn) {
+          previouslyActiveTab = activeTab;
+          activeTab.classList.remove('active');
+        }
+        closeAllMenus(false);
+        openMenu(servicesMegaMenu, servicesBtn);
+      } else {
+        closeAllMenus(true);
+      }
+    });
+  }
+
+  // ── Outside-click / overlay-click: close everything ──
+  document.addEventListener('click', (e) => {
+    const clickedInsidePayments = paymentsBtn && paymentsBtn.contains(e.target);
+    const clickedInsideDeposits = depositsBtn && depositsBtn.contains(e.target);
+    const clickedInsideLoans    = loansBtn && loansBtn.contains(e.target);
+    const clickedInsideCards    = cardsBtn && cardsBtn.contains(e.target);
+    const clickedInsideInvestments = investmentsBtn && investmentsBtn.contains(e.target);
+    const clickedInsideInsurance   = insuranceBtn && insuranceBtn.contains(e.target);
+    const clickedInsideServices    = servicesBtn && servicesBtn.contains(e.target);
+    const clickedInPaymentsMenu = megaMenu && megaMenu.contains(e.target);
+    const clickedInDepositsMenu = depositsMegaMenu && depositsMegaMenu.contains(e.target);
+    const clickedInLoansMenu    = loansMegaMenu && loansMegaMenu.contains(e.target);
+    const clickedInCardsMenu    = cardsMegaMenu && cardsMegaMenu.contains(e.target);
+    const clickedInInvestmentsMenu = investmentsMegaMenu && investmentsMegaMenu.contains(e.target);
+    const clickedInInsuranceMenu   = insuranceMegaMenu && insuranceMegaMenu.contains(e.target);
+    const clickedInServicesMenu    = servicesMegaMenu && servicesMegaMenu.contains(e.target);
+
+    if (!clickedInsidePayments && !clickedInsideDeposits && !clickedInsideLoans && !clickedInsideCards && !clickedInsideInvestments && !clickedInsideInsurance && !clickedInsideServices &&
+        !clickedInPaymentsMenu && !clickedInDepositsMenu && !clickedInLoansMenu && !clickedInCardsMenu && !clickedInInvestmentsMenu && !clickedInInsuranceMenu && !clickedInServicesMenu) {
+      closeAllMenus(true);
+    }
+  });
+});

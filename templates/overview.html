@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SPX BANK - Dashboard Overview</title>
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='assets/favicon/favicon.png') }}">
+    <meta name="description" content="Your SPX BANK Net Banking Dashboard — Account Overview, Quick Actions and Services.">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600;700&family=Roboto+Mono:wght@500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+
+    <!-- Notification Toast System -->
+    <div id="toast-container" class="toast-container"></div>
+
+    <!-- MAIN PORTAL WRAPPER -->
+    <div class="portal-wrapper">
+
+        <!-- SPX BANK TOP NAVIGATION STRIP -->
+        <div class="spx-top-nav">
+            <div class="spx-top-nav-container">
+                <div class="spx-top-nav-left">
+                    <span class="spx-top-tab">Banking</span>
+                </div>
+                <div class="spx-top-nav-right">
+                    <a href="#" class="spx-top-link spx-icon-link" onclick="triggerQuickAction('Get Help')">
+                        <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+                        Get Help
+                    </a>
+                    <a href="tel:1800111101" class="spx-top-link spx-icon-link">
+                        <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
+                        1800-11-1101
+                    </a>
+                    <div class="spx-top-link spx-lang-selector">
+                        English
+                        <svg viewBox="0 0 24 24" width="10" height="10" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                    </div>
+                    <span class="spx-top-divider">|</span>
+                    <button class="spx-font-btn">A-</button>
+                    <button class="spx-font-btn">A</button>
+                    <button class="spx-font-btn">A+</button>
+                    <span class="spx-top-divider">|</span>
+                    <button class="spx-logout-btn" onclick="handleLogout()">Logout</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- MAIN BRANDING HEADER -->
+        <header class="spx-main-header">
+            <div class="spx-header-container">
+                <div class="spx-logo-block" onclick="window.location.href='/'">
+                    <span class="spx-text">SPX BANK</span>
+                    <span class="net-banking-tag">NET-BANKING</span>
+                </div>
+
+                <!-- NAVIGATION MENU (logged-in state) -->
+                <nav class="spx-main-nav">
+                    <div class="spx-nav-menu logged-in-menu">
+                        <a href="#" class="spx-nav-item active" onclick="triggerQuickAction('Overview')">Overview</a>
+                        <a href="/home/landingPage/manageRelationship/transactionAccounts" class="spx-nav-item">Accounts</a>
+                        <a id="nav-payments-tab" class="spx-nav-item" href="#">Payments</a>
+                        <a id="nav-deposits-tab" class="spx-nav-item" href="#">Deposits</a>
+                        <a id="nav-loans-tab" class="spx-nav-item" href="#">Loans</a>
+                        <a id="nav-cards-tab" class="spx-nav-item" href="#">Cards</a>
+                        <a id="nav-investments-tab" class="spx-nav-item" href="#">Investments</a>
+                        <a id="nav-insurance-tab" class="spx-nav-item" href="#">Insurance</a>
+                        <a id="nav-services-tab" class="spx-nav-item" href="#">Services</a>
+                        {% include 'components/services_mega_menu.html' %}
+                    </div>
+                </nav>
+
+                {% include 'components/mega_menu.html' %}
+                {% include 'components/deposits_mega_menu.html' %}
+                {% include 'components/loans_mega_menu.html' %}
+                {% include 'components/cards_mega_menu.html' %}
+                {% include 'components/investments_mega_menu.html' %}
+                {% include 'components/insurance_mega_menu.html' %}
+
+                <div class="spx-header-actions">
+                    <button class="spx-header-icon-btn" onclick="triggerQuickAction('Search Portal')">
+                        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                    </button>
+                    <button class="spx-header-icon-btn" onclick="triggerQuickAction('Notifications')">
+                        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
+                    </button>
+                    <div class="spx-user-badge">
+                        <span class="spx-avatar-initials" id="dash-avatar">JD</span>
+                        <span class="spx-user-profile-label">My Profile</span>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- PORTAL MAIN CONTENT -->
+        <main class="spx-portal-body">
+
+            <!-- DASHBOARD VIEW (Interior of #dashboard-view from index.html) -->
+            <div id="dashboard-view" class="spx-dashboard-container">
+
+                <!-- GREETING ROW -->
+                <div class="spx-dash-greeting-bar">
+                    <span class="spx-dash-greeting-text">Hi <strong id="dash-user-name">John Doe</strong>, Hope you're doing well!</span>
+                </div>
+
+                <!-- HORIZONTAL CIRCULAR LINKS CAROUSEL -->
+                <div class="spx-carousel-section">
+                    <div class="spx-carousel-wrapper">
+                        <div class="spx-carousel-item" onclick="triggerQuickAction('IPO Application')">
+                            <div class="spx-carousel-icon bg-cyan">
+                                <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
+                            </div>
+                            <span class="spx-carousel-label">IPO</span>
+                        </div>
+                        <div class="spx-carousel-item" onclick="triggerQuickAction('Fraud Awareness')">
+                            <div class="spx-carousel-icon bg-rose">
+                                <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+                            </div>
+                            <span class="spx-carousel-label">Fraud Awareness</span>
+                        </div>
+                        <div class="spx-carousel-item" onclick="triggerQuickAction('Discover Services')">
+                            <div class="spx-carousel-icon bg-blue">
+                                <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"></polygon></svg>
+                            </div>
+                            <span class="spx-carousel-label">Discover</span>
+                        </div>
+                        <div class="spx-carousel-item" onclick="triggerQuickAction('Savings Account Details')">
+                            <div class="spx-carousel-icon bg-emerald">
+                                <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+                            </div>
+                            <span class="spx-carousel-label">Savings Ac</span>
+                        </div>
+                        <div class="spx-carousel-item" onclick="triggerQuickAction('Education Loan')">
+                            <div class="spx-carousel-icon bg-orange">
+                                <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 10v6M2 10l10-5 10 5-10 5z"></path><path d="M6 12v5c0 2 2 3 6 3s6-1 6-3v-5"></path></svg>
+                            </div>
+                            <span class="spx-carousel-label">Education Loan</span>
+                        </div>
+                        <div class="spx-carousel-item" onclick="triggerQuickAction('Welcome to SPX BANK Tutorial')">
+                            <div class="spx-carousel-icon bg-purple">
+                                <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                            </div>
+                            <span class="spx-carousel-label">Welcome to SPX BANK</span>
+                        </div>
+                        <div class="spx-carousel-item" onclick="triggerQuickAction('Elevate Spends offer')">
+                            <div class="spx-carousel-icon bg-pink">
+                                <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="19" x2="12" y2="5"></line><polyline points="5 12 12 5 19 12"></polyline></svg>
+                            </div>
+                            <span class="spx-carousel-label">Elevate spends</span>
+                        </div>
+                        <div class="spx-carousel-item" onclick="triggerQuickAction('Secure Savings Scheme')">
+                            <div class="spx-carousel-icon bg-indigo">
+                                <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+                            </div>
+                            <span class="spx-carousel-label">Secure Your Savings</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 2-COLUMN DASHBOARD GRID -->
+                <div class="spx-dash-grid">
+
+                    <!-- Left: Relationship Overview -->
+                    <div class="spx-dash-column-left">
+                        <div class="spx-section-header-row">
+                            <h4 class="spx-section-title">Relationship Overview</h4>
+                            <a href="/home/landingPage/manageRelationship/transactionAccounts" class="spx-view-accounts-btn" style="text-decoration: none; text-align: center;">View All Accounts</a>
+                        </div>
+
+                        <div class="spx-cards-container">
+                            <!-- Card 1: TRANSACTION ACCOUNTS -->
+                            <div class="spx-overview-card bg-purple-gradient">
+                                <div class="spx-ov-card-header">
+                                    <span>TRANSACTION ACCOUNTS</span>
+                                    <button class="spx-eye-btn" id="balance-eye-icon" onclick="toggleBalanceVisibility()" title="Show/Hide Balance">
+                                        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                                    </button>
+                                </div>
+                                <div class="spx-ov-card-body">
+                                    <span class="spx-ov-label">Combined Balance</span>
+                                    <h2 class="spx-ov-balance">$<span id="dash-balance">148,920.50</span> USD</h2>
+                                    <p class="spx-ov-subtext" id="dash-acc-num">ACC: #8849-2049-1102</p>
+                                    <p class="spx-ov-subtext-small" id="dash-acc-type">Premier Checking Account</p>
+                                </div>
+                                <div class="spx-ov-card-footer">
+                                    <a href="/home/landingPage/manageRelationship/transactionAccounts" class="spx-card-action-btn" style="text-decoration: none; text-align: center; display: inline-flex; align-items: center; justify-content: center;">View Accounts</a>
+                                    <button class="spx-card-action-btn fill" onclick="triggerQuickAction('Bank Statements')">Transactions</button>
+                                </div>
+                            </div>
+
+                            <!-- Card 2: DEPOSITS -->
+                            <div class="spx-overview-card bg-light-purple">
+                                <div class="spx-ov-card-header">
+                                    <span>DEPOSITS</span>
+                                </div>
+                                <div class="spx-ov-card-body flex-grow">
+                                    <span class="spx-ov-label">Grow your money faster</span>
+                                    <p class="spx-ov-promo-text">Get high-yield interest rates up to 7.5% per annum on Fixed &amp; Recurring Deposits.</p>
+                                </div>
+                                <div class="spx-ov-card-footer">
+                                    <button class="spx-card-action-btn outline-purple" onclick="triggerQuickAction('Create Fixed Deposit')">Explore</button>
+                                </div>
+                            </div>
+
+                            <!-- Card 3: LOANS -->
+                            <div class="spx-overview-card bg-blue-gradient">
+                                <div class="spx-ov-card-header">
+                                    <span>LOANS</span>
+                                </div>
+                                <div class="spx-ov-card-body">
+                                    <span class="spx-ov-label">Total Outstanding Amount</span>
+                                    <h2 class="spx-ov-balance">$0.00 USD</h2>
+                                    <p class="spx-ov-subtext">No active loan liabilities</p>
+                                </div>
+                                <div class="spx-ov-card-footer">
+                                    <button class="spx-card-action-btn" onclick="triggerQuickAction('View Loan Details')">View Details</button>
+                                    <button class="spx-card-action-btn fill" onclick="triggerQuickAction('Apply for Loan')">Manage Loan</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- PORTAL AUDIT LOGS SECTION -->
+                        <div class="spx-audit-section">
+                            <h4 class="spx-section-title-small">Portal Audit History &amp; Status</h4>
+                            <div class="spx-audit-list" id="activity-list">
+                                <div class="spx-audit-item">
+                                    <div class="spx-audit-left">
+                                        <div class="spx-audit-icon">
+                                            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#22c55e" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+                                        </div>
+                                        <div class="spx-audit-details">
+                                            <strong>CAPTCHA &amp; Gmail OTP Authentication</strong>
+                                            <span class="spx-audit-time" id="last-login-time">Just Now • Verified IP</span>
+                                        </div>
+                                    </div>
+                                    <span class="spx-audit-badge green">Passed</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Right: Services Sidebar Categories -->
+                    <div class="spx-dash-column-right">
+
+                        <!-- DEPOSITS -->
+                        <div class="spx-sidebar-widget">
+                            <div class="spx-widget-header">
+                                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+                                <span>Deposits</span>
+                            </div>
+                            <ul class="spx-widget-links">
+                                <li><a href="#" onclick="triggerQuickAction('Fixed Deposit')">Fixed Deposit</a></li>
+                                <li><a href="#" onclick="triggerQuickAction('Recurring Deposit')">Recurring Deposit</a></li>
+                                <li><a href="#" onclick="triggerQuickAction('Annuity Deposit')">Annuity Deposit</a></li>
+                                <li><a href="#" onclick="triggerQuickAction('Auto Sweep')">Auto Sweep</a></li>
+                                <li class="view-all"><a href="#" onclick="triggerQuickAction('View All Deposits')">View All</a></li>
+                            </ul>
+                        </div>
+
+                        <!-- LOANS -->
+                        <div class="spx-sidebar-widget">
+                            <div class="spx-widget-header">
+                                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
+                                <span>Loans</span>
+                            </div>
+                            <ul class="spx-widget-links">
+                                <li><a href="#" onclick="triggerQuickAction('Personal Loan')">Personal Loan</a></li>
+                                <li><a href="#" onclick="triggerQuickAction('Loan Against Mutual Fund')">Loan Against Mutual Fund</a></li>
+                                <li><a href="#" onclick="triggerQuickAction('Home Loan')">Home Loan</a></li>
+                                <li><a href="#" onclick="triggerQuickAction('Gold Loan')">Gold Loan</a></li>
+                                <li class="view-all"><a href="#" onclick="triggerQuickAction('View All Loans')">View All</a></li>
+                            </ul>
+                        </div>
+
+                        <!-- INVESTMENTS -->
+                        <div class="spx-sidebar-widget">
+                            <div class="spx-widget-header">
+                                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
+                                <span>Investments</span>
+                            </div>
+                            <ul class="spx-widget-links">
+                                <li><a href="#" onclick="triggerQuickAction('Mutual Funds')">Mutual Funds</a></li>
+                                <li><a href="#" onclick="triggerQuickAction('Demat & Securities')">Demat &amp; Securities</a></li>
+                                <li><a href="#" onclick="triggerQuickAction('NPS')">NPS</a></li>
+                                <li><a href="#" onclick="triggerQuickAction('PPF')">PPF</a></li>
+                                <li class="view-all"><a href="#" onclick="triggerQuickAction('View All Investments')">View All</a></li>
+                            </ul>
+                        </div>
+
+                        <!-- CARDS -->
+                        <div class="spx-sidebar-widget">
+                            <div class="spx-widget-header">
+                                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect><line x1="1" y1="10" x2="23" y2="10"></line></svg>
+                                <span>Cards</span>
+                            </div>
+                            <ul class="spx-widget-links">
+                                <li><a href="#" onclick="triggerQuickAction('Credit Cards')">Credit Cards</a></li>
+                                <li><a href="#" onclick="triggerQuickAction('Debit Cards')">Debit Cards</a></li>
+                                <li><a href="#" onclick="triggerQuickAction('Forex Cards')">Forex Cards</a></li>
+                                <li><a href="#" onclick="triggerQuickAction('Prepaid Cards')">Prepaid Cards</a></li>
+                                <li class="view-all"><a href="#" onclick="triggerQuickAction('View All Cards')">View All</a></li>
+                            </ul>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+        </main>
+
+        <!-- OTP VERIFICATION DRAWER -->
+        <div id="otp-modal-overlay" class="otp-drawer-overlay hidden">
+            <div class="otp-drawer">
+                <div class="otp-drawer-header">
+                    <button class="otp-close-btn" onclick="closeOtpModal()" title="Close OTP Verification">
+                        <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                    </button>
+                </div>
+                <div class="otp-drawer-content">
+                    <p class="otp-delivery-notice">
+                        An OTP has been sent to your registered mobile number / Gmail: <br>
+                        <strong id="otp-target-display" class="spx-otp-target">user@gmail.com</strong>
+                    </p>
+                    <!-- OTP Code Inputs -->
+                    <div class="spx-otp-fields-row">
+                        <div class="otp-inputs-wrapper" id="otp-inputs">
+                            <input type="text" maxlength="1" pattern="[0-9]" inputmode="numeric" class="otp-box spx-otp-box" data-index="0" autofocus>
+                            <input type="text" maxlength="1" pattern="[0-9]" inputmode="numeric" class="otp-box spx-otp-box" data-index="1">
+                            <input type="text" maxlength="1" pattern="[0-9]" inputmode="numeric" class="otp-box spx-otp-box" data-index="2">
+                            <input type="text" maxlength="1" pattern="[0-9]" inputmode="numeric" class="otp-box spx-otp-box" data-index="3">
+                            <input type="text" maxlength="1" pattern="[0-9]" inputmode="numeric" class="otp-box spx-otp-box" data-index="4">
+                            <input type="text" maxlength="1" pattern="[0-9]" inputmode="numeric" class="otp-box spx-otp-box" data-index="5">
+                        </div>
+                        <button type="button" class="spx-otp-reveal-btn" onclick="showToast('OTP is hidden for security', 'info')">
+                            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                        </button>
+                    </div>
+                    <div class="spx-otp-timer-row">
+                        <span class="spx-otp-timer-text">Resend OTP in <strong id="otp-countdown">35s</strong></span>
+                        <button id="resend-otp-btn" class="spx-otp-resend-btn" onclick="resendOtpCode()" disabled>Resend OTP</button>
+                    </div>
+                    <div class="spx-otp-submit-row">
+                        <button type="button" class="spx-btn-otp-proceed" id="btn-verify-otp" onclick="submitOtpVerification()">
+                            <span class="btn-text">Proceed</span>
+                            <span class="btn-spinner hidden"></span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SPX BANK THEMED SESSION TIMEOUT / ERROR DIALOG -->
+        <div id="timeout-modal-overlay" class="timeout-modal-overlay hidden">
+            <div class="timeout-modal">
+                <div class="timeout-modal-title">Under Development</div>
+                <div class="timeout-modal-body">
+                    <div class="timeout-caution-icon">
+                        <svg viewBox="0 0 24 24" width="48" height="48" fill="none" stroke="#dc2626" stroke-width="1.5"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+                    </div>
+                    <p class="timeout-message" id="timeout-message-text">this feature is currently under development.</p>
+                </div>
+                <div class="timeout-modal-footer">
+                    <button class="timeout-ok-btn" onclick="closeTimeoutModal()">OK</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- FOOTER -->
+        <footer class="spx-portal-footer">
+            <div class="spx-footer-container">
+                <div class="spx-footer-links">
+                    <a href="#about" onclick="triggerQuickAction('About Us')">About Us</a>
+                    <span class="spx-footer-divider">|</span>
+                    <a href="#terms" onclick="triggerQuickAction('Terms & Conditions')">Terms &amp; Conditions</a>
+                    <span class="spx-footer-divider">|</span>
+                    <a href="#privacy" onclick="triggerQuickAction('Privacy Policy')">Privacy Policy</a>
+                </div>
+            </div>
+        </footer>
+
+    </div>
+
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+</html>
+
