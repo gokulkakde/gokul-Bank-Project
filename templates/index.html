@@ -72,7 +72,7 @@
                         <a href="#" class="spx-nav-item" onclick="triggerQuickAction('Accounts dashboard')">Accounts</a>
                         <a id="nav-payments-tab" class="spx-nav-item" href="#">Payments</a>
                         <a id="nav-deposits-tab" class="spx-nav-item" href="#">Deposits</a>
-                        <a href="#" class="spx-nav-item" onclick="triggerQuickAction('Loans portal')">Loans</a>
+                        <a id="nav-loans-tab" class="spx-nav-item" href="#">Loans</a>
                         <a href="#" class="spx-nav-item" onclick="triggerQuickAction('Cards management')">Cards</a>
                         <a href="#" class="spx-nav-item" onclick="triggerQuickAction('Investments options')">Investments</a>
                         <a href="#" class="spx-nav-item" onclick="triggerQuickAction('Insurance details')">Insurance</a>
@@ -82,6 +82,7 @@
 
                 {% include 'components/mega_menu.html' %}
                 {% include 'components/deposits_mega_menu.html' %}
+                {% include 'components/loans_mega_menu.html' %}
 
                 <div class="spx-header-actions logged-in-only hidden">
                     <button class="spx-header-icon-btn" onclick="triggerQuickAction('Search Portal')">
