@@ -890,59 +890,92 @@ function showToast(message, type = 'info') {
 let previouslyActiveTab = null;
 
 document.addEventListener('DOMContentLoaded', () => {
-  const paymentsBtn = document.getElementById('nav-payments-tab');
-  const megaMenu = document.querySelector('.spx-mega-menu');
-  const overlay = document.getElementById('mega-menu-overlay');
+  const paymentsBtn    = document.getElementById('nav-payments-tab');
+  const depositsBtn    = document.getElementById('nav-deposits-tab');
+  const megaMenu       = document.querySelector('.spx-mega-menu');
+  const depositsMegaMenu = document.querySelector('.spx-deposits-mega-menu');
+  const overlay        = document.getElementById('mega-menu-overlay');
 
+  // ── Helper: close ALL mega-menus and restore previously-active tab ──
+  function closeAllMenus(restoreTab) {
+    if (megaMenu)        { megaMenu.classList.remove('active'); }
+    if (depositsMegaMenu){ depositsMegaMenu.classList.remove('active'); }
+    if (paymentsBtn)     { paymentsBtn.classList.remove('mega-active'); }
+    if (depositsBtn)     { depositsBtn.classList.remove('mega-active'); }
+    if (overlay)         { overlay.classList.remove('active'); }
+    if (restoreTab && previouslyActiveTab) {
+      previouslyActiveTab.classList.add('active');
+      previouslyActiveTab = null;
+    }
+  }
+
+  // ── Helper: open a specific menu, centred under its trigger button ──
+  function openMenu(menu, triggerBtn) {
+    if (!menu || !triggerBtn) return;
+    const tabRect    = triggerBtn.getBoundingClientRect();
+    const parentRect = menu.offsetParent
+        ? menu.offsetParent.getBoundingClientRect()
+        : { left: 0 };
+    const tabCentre  = tabRect.left + tabRect.width / 2 - parentRect.left;
+    const menuHalf   = menu.offsetWidth / 2 || 270; // fallback 270 = 540/2
+    menu.style.left      = (tabCentre - menuHalf) + 'px';
+    menu.style.transform = 'none';
+    menu.classList.add('active');
+    triggerBtn.classList.add('mega-active');
+    if (overlay) overlay.classList.add('active');
+  }
+
+  // ── Payments tab ──
   if (paymentsBtn && megaMenu) {
     paymentsBtn.addEventListener('click', (e) => {
       e.preventDefault();
-      
       const isOpening = !megaMenu.classList.contains('active');
-      
       if (isOpening) {
-        // Dynamically center the menu under the Payments tab
-        const tabRect = paymentsBtn.getBoundingClientRect();
-        const parentRect = megaMenu.offsetParent
-            ? megaMenu.offsetParent.getBoundingClientRect()
-            : { left: 0 };
-        const tabCentre = tabRect.left + tabRect.width / 2 - parentRect.left;
-        const menuHalf = megaMenu.offsetWidth / 2 || 270; // fallback 270 = 540/2
-        megaMenu.style.left = (tabCentre - menuHalf) + 'px';
-        megaMenu.style.transform = 'none'; // JS handles position; CSS transform not needed
-
-        megaMenu.classList.add('active');
-        paymentsBtn.classList.add('mega-active');
-        if (overlay) overlay.classList.add('active');
-        
+        // Snapshot active tab before closing it
         const activeTab = document.querySelector('.spx-nav-item.active');
         if (activeTab && activeTab !== paymentsBtn) {
-            previouslyActiveTab = activeTab;
-            activeTab.classList.remove('active');
+          previouslyActiveTab = activeTab;
+          activeTab.classList.remove('active');
         }
+        closeAllMenus(false);   // close Deposits (if open) without restoring
+        openMenu(megaMenu, paymentsBtn);
       } else {
-        megaMenu.classList.remove('active');
-        paymentsBtn.classList.remove('mega-active');
-        if (overlay) overlay.classList.remove('active');
-        
-        if (previouslyActiveTab) {
-            previouslyActiveTab.classList.add('active');
-            previouslyActiveTab = null;
-        }
-      }
-    });
-
-    document.addEventListener('click', (e) => {
-      if (!paymentsBtn.contains(e.target) && !megaMenu.contains(e.target)) {
-        megaMenu.classList.remove('active');
-        paymentsBtn.classList.remove('mega-active');
-        if (overlay) overlay.classList.remove('active');
-        
-        if (previouslyActiveTab) {
-            previouslyActiveTab.classList.add('active');
-            previouslyActiveTab = null;
-        }
+        closeAllMenus(true);
       }
     });
   }
+
+  // ── Deposits tab ──
+  if (depositsBtn && depositsMegaMenu) {
+    depositsBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      const isOpening = !depositsMegaMenu.classList.contains('active');
+      if (isOpening) {
+        // Snapshot active tab before closing it
+        const activeTab = document.querySelector('.spx-nav-item.active');
+        if (activeTab && activeTab !== depositsBtn) {
+          previouslyActiveTab = activeTab;
+          activeTab.classList.remove('active');
+        }
+        closeAllMenus(false);   // close Payments (if open) without restoring
+        openMenu(depositsMegaMenu, depositsBtn);
+      } else {
+        closeAllMenus(true);
+      }
+    });
+  }
+
+  // ── Outside-click / overlay-click: close everything ──
+  document.addEventListener('click', (e) => {
+    const clickedInsidePayments = paymentsBtn && paymentsBtn.contains(e.target);
+    const clickedInsideDeposits = depositsBtn && depositsBtn.contains(e.target);
+    const clickedInPaymentsMenu = megaMenu && megaMenu.contains(e.target);
+    const clickedInDepositsMenu = depositsMegaMenu && depositsMegaMenu.contains(e.target);
+
+    if (!clickedInsidePayments && !clickedInsideDeposits &&
+        !clickedInPaymentsMenu && !clickedInDepositsMenu) {
+      closeAllMenus(true);
+    }
+  });
 });
+
