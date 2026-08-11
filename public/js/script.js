@@ -895,11 +895,13 @@ document.addEventListener('DOMContentLoaded', () => {
   const loansBtn       = document.getElementById('nav-loans-tab');
   const cardsBtn       = document.getElementById('nav-cards-tab');
   const investmentsBtn = document.getElementById('nav-investments-tab');
+  const insuranceBtn   = document.getElementById('nav-insurance-tab');
   const megaMenu       = document.querySelector('.spx-mega-menu');
   const depositsMegaMenu = document.querySelector('.spx-deposits-mega-menu');
   const loansMegaMenu  = document.querySelector('.spx-loans-mega-menu');
   const cardsMegaMenu  = document.querySelector('.spx-cards-mega-menu');
   const investmentsMegaMenu = document.querySelector('.spx-investments-mega-menu');
+  const insuranceMegaMenu = document.querySelector('.spx-insurance-mega-menu');
   const overlay        = document.getElementById('mega-menu-overlay');
 
   // ── Helper: close ALL mega-menus and restore previously-active tab ──
@@ -909,11 +911,13 @@ document.addEventListener('DOMContentLoaded', () => {
     if (loansMegaMenu)   { loansMegaMenu.classList.remove('active'); }
     if (cardsMegaMenu)   { cardsMegaMenu.classList.remove('active'); }
     if (investmentsMegaMenu){ investmentsMegaMenu.classList.remove('active'); }
+    if (insuranceMegaMenu){ insuranceMegaMenu.classList.remove('active'); }
     if (paymentsBtn)     { paymentsBtn.classList.remove('mega-active'); }
     if (depositsBtn)     { depositsBtn.classList.remove('mega-active'); }
     if (loansBtn)        { loansBtn.classList.remove('mega-active'); }
     if (cardsBtn)        { cardsBtn.classList.remove('mega-active'); }
     if (investmentsBtn)  { investmentsBtn.classList.remove('mega-active'); }
+    if (insuranceBtn)    { insuranceBtn.classList.remove('mega-active'); }
     if (overlay)         { overlay.classList.remove('active'); }
     if (restoreTab && previouslyActiveTab) {
       previouslyActiveTab.classList.add('active');
@@ -1037,6 +1041,26 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
+  // ── Insurance tab ──
+  if (insuranceBtn && insuranceMegaMenu) {
+    insuranceBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      const isOpening = !insuranceMegaMenu.classList.contains('active');
+      if (isOpening) {
+        // Snapshot active tab before closing it
+        const activeTab = document.querySelector('.spx-nav-item.active');
+        if (activeTab && activeTab !== insuranceBtn) {
+          previouslyActiveTab = activeTab;
+          activeTab.classList.remove('active');
+        }
+        closeAllMenus(false);
+        openMenu(insuranceMegaMenu, insuranceBtn);
+      } else {
+        closeAllMenus(true);
+      }
+    });
+  }
+
   // ── Outside-click / overlay-click: close everything ──
   document.addEventListener('click', (e) => {
     const clickedInsidePayments = paymentsBtn && paymentsBtn.contains(e.target);
@@ -1044,14 +1068,16 @@ document.addEventListener('DOMContentLoaded', () => {
     const clickedInsideLoans    = loansBtn && loansBtn.contains(e.target);
     const clickedInsideCards    = cardsBtn && cardsBtn.contains(e.target);
     const clickedInsideInvestments = investmentsBtn && investmentsBtn.contains(e.target);
+    const clickedInsideInsurance   = insuranceBtn && insuranceBtn.contains(e.target);
     const clickedInPaymentsMenu = megaMenu && megaMenu.contains(e.target);
     const clickedInDepositsMenu = depositsMegaMenu && depositsMegaMenu.contains(e.target);
     const clickedInLoansMenu    = loansMegaMenu && loansMegaMenu.contains(e.target);
     const clickedInCardsMenu    = cardsMegaMenu && cardsMegaMenu.contains(e.target);
     const clickedInInvestmentsMenu = investmentsMegaMenu && investmentsMegaMenu.contains(e.target);
+    const clickedInInsuranceMenu   = insuranceMegaMenu && insuranceMegaMenu.contains(e.target);
 
-    if (!clickedInsidePayments && !clickedInsideDeposits && !clickedInsideLoans && !clickedInsideCards && !clickedInsideInvestments &&
-        !clickedInPaymentsMenu && !clickedInDepositsMenu && !clickedInLoansMenu && !clickedInCardsMenu && !clickedInInvestmentsMenu) {
+    if (!clickedInsidePayments && !clickedInsideDeposits && !clickedInsideLoans && !clickedInsideCards && !clickedInsideInvestments && !clickedInsideInsurance &&
+        !clickedInPaymentsMenu && !clickedInDepositsMenu && !clickedInLoansMenu && !clickedInCardsMenu && !clickedInInvestmentsMenu && !clickedInInsuranceMenu) {
       closeAllMenus(true);
     }
   });

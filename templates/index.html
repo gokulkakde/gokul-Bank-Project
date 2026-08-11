@@ -75,7 +75,7 @@
                         <a id="nav-loans-tab" class="spx-nav-item" href="#">Loans</a>
                         <a id="nav-cards-tab" class="spx-nav-item" href="#">Cards</a>
                         <a id="nav-investments-tab" class="spx-nav-item" href="#">Investments</a>
-                        <a href="#" class="spx-nav-item" onclick="triggerQuickAction('Insurance details')">Insurance</a>
+                        <a id="nav-insurance-tab" class="spx-nav-item" href="#">Insurance</a>
                         <a href="#" class="spx-nav-item" onclick="triggerQuickAction('Other Services')">Services</a>
                     </div>
                 </nav>
@@ -85,6 +85,7 @@
                 {% include 'components/loans_mega_menu.html' %}
                 {% include 'components/cards_mega_menu.html' %}
                 {% include 'components/investments_mega_menu.html' %}
+                {% include 'components/insurance_mega_menu.html' %}
 
                 <div class="spx-header-actions logged-in-only hidden">
                     <button class="spx-header-icon-btn" onclick="triggerQuickAction('Search Portal')">
