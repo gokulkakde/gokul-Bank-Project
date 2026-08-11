@@ -2028,3 +2028,39 @@ body:has(#forgot-password-view:not(.hidden)) .spx-global-back-container {
     position: relative;
     z-index: 1003;
 }
+
+/* ===== Investments Mega Menu ===== */
+.spx-investments-mega-menu {
+    position: absolute;
+    top: 100% !important;
+    left: 0; /* Overridden dynamically by JS — centres under Investments tab */
+    width: 540px;
+    background: #f4f3f8;
+    border-top-left-radius: 0 !important;
+    border-top-right-radius: 0 !important;
+    border-bottom-left-radius: 16px !important;
+    border-bottom-right-radius: 16px !important;
+    box-shadow: 0 14px 28px rgba(0, 0, 0, 0.1);
+    padding: 1.25rem 1.5rem;
+    display: none;
+    z-index: 1002;
+    margin-top: -1px;
+    border-top: none !important;
+    outline: none !important;
+}
+
+.spx-investments-mega-menu.active {
+    display: block !important;
+}
+
+#nav-investments-tab.mega-active {
+    background: #f4f3f8 !important;
+    color: #3c1253 !important;
+    border-bottom: none !important;
+    border-bottom-left-radius: 0 !important;
+    border-bottom-right-radius: 0 !important;
+    margin-bottom: -1px !important;
+    padding-bottom: 6px !important;
+    position: relative;
+    z-index: 1003;
+}

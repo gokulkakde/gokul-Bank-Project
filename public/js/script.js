@@ -894,10 +894,12 @@ document.addEventListener('DOMContentLoaded', () => {
   const depositsBtn    = document.getElementById('nav-deposits-tab');
   const loansBtn       = document.getElementById('nav-loans-tab');
   const cardsBtn       = document.getElementById('nav-cards-tab');
+  const investmentsBtn = document.getElementById('nav-investments-tab');
   const megaMenu       = document.querySelector('.spx-mega-menu');
   const depositsMegaMenu = document.querySelector('.spx-deposits-mega-menu');
   const loansMegaMenu  = document.querySelector('.spx-loans-mega-menu');
   const cardsMegaMenu  = document.querySelector('.spx-cards-mega-menu');
+  const investmentsMegaMenu = document.querySelector('.spx-investments-mega-menu');
   const overlay        = document.getElementById('mega-menu-overlay');
 
   // ── Helper: close ALL mega-menus and restore previously-active tab ──
@@ -906,10 +908,12 @@ document.addEventListener('DOMContentLoaded', () => {
     if (depositsMegaMenu){ depositsMegaMenu.classList.remove('active'); }
     if (loansMegaMenu)   { loansMegaMenu.classList.remove('active'); }
     if (cardsMegaMenu)   { cardsMegaMenu.classList.remove('active'); }
+    if (investmentsMegaMenu){ investmentsMegaMenu.classList.remove('active'); }
     if (paymentsBtn)     { paymentsBtn.classList.remove('mega-active'); }
     if (depositsBtn)     { depositsBtn.classList.remove('mega-active'); }
     if (loansBtn)        { loansBtn.classList.remove('mega-active'); }
     if (cardsBtn)        { cardsBtn.classList.remove('mega-active'); }
+    if (investmentsBtn)  { investmentsBtn.classList.remove('mega-active'); }
     if (overlay)         { overlay.classList.remove('active'); }
     if (restoreTab && previouslyActiveTab) {
       previouslyActiveTab.classList.add('active');
@@ -1013,21 +1017,42 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
+  // ── Investments tab ──
+  if (investmentsBtn && investmentsMegaMenu) {
+    investmentsBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      const isOpening = !investmentsMegaMenu.classList.contains('active');
+      if (isOpening) {
+        // Snapshot active tab before closing it
+        const activeTab = document.querySelector('.spx-nav-item.active');
+        if (activeTab && activeTab !== investmentsBtn) {
+          previouslyActiveTab = activeTab;
+          activeTab.classList.remove('active');
+        }
+        closeAllMenus(false);
+        openMenu(investmentsMegaMenu, investmentsBtn);
+      } else {
+        closeAllMenus(true);
+      }
+    });
+  }
+
   // ── Outside-click / overlay-click: close everything ──
   document.addEventListener('click', (e) => {
     const clickedInsidePayments = paymentsBtn && paymentsBtn.contains(e.target);
     const clickedInsideDeposits = depositsBtn && depositsBtn.contains(e.target);
     const clickedInsideLoans    = loansBtn && loansBtn.contains(e.target);
     const clickedInsideCards    = cardsBtn && cardsBtn.contains(e.target);
+    const clickedInsideInvestments = investmentsBtn && investmentsBtn.contains(e.target);
     const clickedInPaymentsMenu = megaMenu && megaMenu.contains(e.target);
     const clickedInDepositsMenu = depositsMegaMenu && depositsMegaMenu.contains(e.target);
     const clickedInLoansMenu    = loansMegaMenu && loansMegaMenu.contains(e.target);
     const clickedInCardsMenu    = cardsMegaMenu && cardsMegaMenu.contains(e.target);
+    const clickedInInvestmentsMenu = investmentsMegaMenu && investmentsMegaMenu.contains(e.target);
 
-    if (!clickedInsidePayments && !clickedInsideDeposits && !clickedInsideLoans && !clickedInsideCards &&
-        !clickedInPaymentsMenu && !clickedInDepositsMenu && !clickedInLoansMenu && !clickedInCardsMenu) {
+    if (!clickedInsidePayments && !clickedInsideDeposits && !clickedInsideLoans && !clickedInsideCards && !clickedInsideInvestments &&
+        !clickedInPaymentsMenu && !clickedInDepositsMenu && !clickedInLoansMenu && !clickedInCardsMenu && !clickedInInvestmentsMenu) {
       closeAllMenus(true);
     }
   });
 });
-
